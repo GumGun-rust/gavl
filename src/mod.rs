@@ -78,7 +78,7 @@ impl<T:Ord+Debug, U:Debug> Map<T, U>{
             Some(data) => {
                 insert_node(data, new_node);
                 //println!("{:?}", Node::get_side(new_node));
-                Node::compute_height(new_node);
+                self.compute_height(new_node);
                 return false;
                 //panic!();
             }
@@ -86,6 +86,88 @@ impl<T:Ord+Debug, U:Debug> Map<T, U>{
         
     }
     
+    fn compute_height(&mut self ,mut pivot: Link<T, U>) -> bool {
+        println!("computing height-------------------------");
+        
+        loop{           
+            let side = Node::get_side(pivot);
+            let side = match side {
+                Some(side) => {
+                    side
+                },
+                None => {
+                    println!("test test test test test test test");
+                    break;
+                }
+            };
+            
+            let pivot_ref = unsafe {pivot.as_ref()};
+            let mut pivot_father = pivot_ref.father.unwrap();
+            let pivot_father_mut = unsafe {pivot_father.as_mut()};
+            let pivot_new_depth = Node::get_max_height(pivot)+1;
+            
+            println!("{:?}", side);
+            println!("{:?}", pivot_father_mut);
+            
+            if pivot_father_mut.depth[side] >= pivot_new_depth {
+                println!("{:?}", pivot_father_mut);
+                break;
+            }
+            pivot_father_mut.depth[side] = pivot_new_depth;
+            
+            let balance_factor = pivot_father_mut.depth[Side::Left] - pivot_father_mut.depth[Side::Right];
+            if balance_factor >= 2 {
+                println!("-------------------\n\nbalance positivo\n\n------------------");
+                match Node::get_deepest_son_side(pivot) {
+                    Side::Left => {
+                        println!("left");
+                        self.rotate_right(pivot);
+                    },
+                    Side::Right => {
+                        println!("right");
+                        //self.rotate_left(pivot->right);
+                        self.rotate_right(pivot);
+                    },
+                }
+                
+                
+            }
+            if balance_factor <= -2 {
+                match Node::get_deepest_son_side(pivot) {
+                    Side::Right => {
+                        println!("left");
+                        self.rotate_left(pivot);
+                    },
+                    Side::Left => {
+                        println!("right");
+                        //self.rotate_right(pivot-right);
+                        self.rotate_left(pivot);
+                    },
+                }
+                println!("-------------------\n\nbalance negativo\n\n------------------");
+            }
+            
+            pivot = pivot_father;
+            
+            //panic!("testPanic");
+        }
+        println!("computing height-------------------------\n\n");
+        true
+    }
+    
+    
+    fn rotate_right(&mut self, mut pivot:Link<T, U>) -> bool {
+        println!("rotating right");
+        let mut pivot_mut = unsafe{ pivot.as_mut() };
+        pivot_mut.depth[Side::Right] = 1000;
+        println!("{:?}", pivot_mut);
+        false
+    }
+    
+    fn rotate_left(&mut self, pivot:Link<T, U>) -> bool {
+        println!("rotating left");
+        false
+    }
 }
 
 fn insert_node<T:Ord+Debug, U:Debug>(mut pivot: Link<T, U>, mut node: Link<T, U>) -> bool{
@@ -134,49 +216,6 @@ fn rotation() -> bool {
 
 impl<T:Ord+Debug, U:Debug> Node<T, U>{
     
-    fn compute_height(mut pivot: Link<T, U>) -> bool {
-        println!("computing height-------------------------");
-        
-        loop{           
-            let side = Node::get_side(pivot);
-            let side = match side {
-                Some(side) => {
-                    side
-                },
-                None => {
-                    println!("test test test test test test test");
-                    break;
-                }
-            };
-            
-            let mut pivot_father = unsafe {pivot.as_ref().father.unwrap()};
-            let pivot_father_mut = unsafe {pivot_father.as_mut()};
-            let pivot_new_depth = Node::get_max_height(pivot)+1;
-            
-            println!("{:?}", side);
-            println!("{:?}", pivot_father_mut);
-            
-            if pivot_father_mut.depth[side] >= pivot_new_depth {
-                println!("{:?}", pivot_father_mut);
-                break;
-            }
-            pivot_father_mut.depth[side] = pivot_new_depth;
-            
-            let balance_factor = pivot_father_mut.depth[Side::Left] - pivot_father_mut.depth[Side::Right];
-            if balance_factor >= 2 {
-                println!("-------------------\n\nbalance positivo\n\n------------------");
-            }
-            if balance_factor <= -2 {
-                println!("-------------------\n\nbalance negativo\n\n------------------");
-            }
-            
-            pivot = pivot_father;
-            
-            //panic!("testPanic");
-        }
-        println!("computing height-------------------------\n\n");
-        true
-    }
     
     fn get_max_height(node: Link<T, U>)-> i32 {
         let node_ref = unsafe {node.as_ref()};
@@ -204,6 +243,22 @@ impl<T:Ord+Debug, U:Debug> Node<T, U>{
             }
         }
         None
+    }
+    
+    fn get_deepest_son_side(node:Link<T, U>) -> Side {
+        let node_ref = unsafe{ node.as_ref() };
+        match node_ref.depth[Side::Left].cmp(&node_ref.depth[Side::Right]) {
+            Ordering::Less => {
+                Side::Right
+            },
+            Ordering::Greater => {
+                Side::Left
+            },
+            Ordering::Equal => {
+                panic!();
+            },
+            
+        }
     }
 }
 

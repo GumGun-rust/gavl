@@ -8,8 +8,8 @@ mod avl_test{
         let mut hola = avl::Map::<u64,u64>::new();
         //println!("{:#?}",hola);
         hola.add(100, 1);
-        hola.add(50, 0);
         hola.add(25, 0);
+        hola.add(50, 0);
         println!("{:#?}",hola);
         /*
         println!("\n\n\n\n");
