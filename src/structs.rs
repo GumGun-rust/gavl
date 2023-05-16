@@ -35,3 +35,11 @@ impl<T> IndexMut<Side> for BinarySon<T>{
     }
 }
 
+impl Side {
+    fn other(self) -> Self {
+        match self {
+            Side::Left => Side::Right,
+            Side::Right => Side::Left,
+        }
+    }
+}

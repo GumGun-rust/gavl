@@ -31,7 +31,7 @@ struct Node<T:Ord, U>{
     key: T,
     content: U,
     father: Option<Link<T,U>>,
-    depth: BinarySon<u64>,
+    depth: BinarySon<i32>,
     son: BinarySon<Option<Link<T,U>>>,
 }
 
@@ -108,7 +108,7 @@ fn insert_node<T:Ord+Debug, U:Debug>(mut pivot: Link<T, U>, mut node: Link<T, U>
                 let node_mut = unsafe{ node.as_mut() };
                 node_mut.father = Some(pivot);
                 pivot_mut.son[side] = Some(node);
-                pivot_mut.depth[side] = 1;
+                //pivot_mut.depth[side] = 1;
                 //println!("last");
                 break;
                 //return true;
@@ -144,7 +144,8 @@ impl<T:Ord+Debug, U:Debug> Node<T, U>{
                     side
                 },
                 None => {
-                    panic!("Es la raiz");
+                    println!("test test test test test test test");
+                    break;
                 }
             };
             
@@ -156,9 +157,19 @@ impl<T:Ord+Debug, U:Debug> Node<T, U>{
             println!("{:?}", pivot_father_mut);
             
             if pivot_father_mut.depth[side] >= pivot_new_depth {
+                println!("{:?}", pivot_father_mut);
                 break;
             }
             pivot_father_mut.depth[side] = pivot_new_depth;
+            
+            let balance_factor = pivot_father_mut.depth[Side::Left] - pivot_father_mut.depth[Side::Right];
+            if balance_factor >= 2 {
+                println!("-------------------\n\nbalance positivo\n\n------------------");
+            }
+            if balance_factor <= -2 {
+                println!("-------------------\n\nbalance negativo\n\n------------------");
+            }
+            
             pivot = pivot_father;
             
             //panic!("testPanic");
@@ -167,7 +178,7 @@ impl<T:Ord+Debug, U:Debug> Node<T, U>{
         true
     }
     
-    fn get_max_height(node: Link<T, U>)-> u64 {
+    fn get_max_height(node: Link<T, U>)-> i32 {
         let node_ref = unsafe {node.as_ref()};
         max(node_ref.depth[Side::Left], node_ref.depth[Side::Right])
     }
