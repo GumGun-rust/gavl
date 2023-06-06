@@ -1,3 +1,8 @@
 t:
-	cargo test -- --show-output
+	cargo test 
 
+a:
+	-- --show-output
+
+b:
+	cargo build

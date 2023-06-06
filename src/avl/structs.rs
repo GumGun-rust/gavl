@@ -5,6 +5,10 @@ use core::{
     },
 };
 
+pub use super::{
+    Node,
+};
+
 #[derive(Debug, Clone, Copy)]
 pub enum Side{
     Left,
@@ -31,15 +35,6 @@ impl<T> IndexMut<Side> for BinarySon<T>{
         match index {
             Side::Left => &mut self.content[0],
             Side::Right => &mut self.content[1],
-        }
-    }
-}
-
-impl Side {
-    fn other(self) -> Self {
-        match self {
-            Side::Left => Side::Right,
-            Side::Right => Side::Left,
         }
     }
 }

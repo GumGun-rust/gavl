@@ -1,10 +1,7 @@
-mod r#mod;
-use r#mod as avl;
-mod test;
-mod structs;
+mod avl;
 
 
 fn main() {
     println!("Hello, world!");
-    avl::log();
+    
 }
