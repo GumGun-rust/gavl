@@ -16,7 +16,7 @@ use super::{
 
 impl<T:Ord, U> Map<T, U>{
     
-    pub fn compute_height(&mut self ,mut pivot: Link<T, U>) {
+    pub(super) fn compute_height(&mut self ,mut pivot: Link<T, U>) {
         
         loop{           
             let side = Node::get_side(pivot);
@@ -135,7 +135,7 @@ impl<T:Ord, U> Map<T, U>{
 
 impl<T:Ord, U> Node<T, U>{
     
-    pub fn insert_node(mut pivot: Link<T, U>, mut node: Link<T, U>) -> bool{
+    pub(super) fn insert_node(mut pivot: Link<T, U>, mut node: Link<T, U>) -> bool{
         loop{
             let key_order = unsafe{ node.as_ref().key.cmp(&pivot.as_ref().key) };
             let side = match key_order {

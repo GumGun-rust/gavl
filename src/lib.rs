@@ -3,6 +3,7 @@ mod test;
 mod debug;
 mod balance;
 mod traits;
+mod iters;
 
 use core::{
     ptr::NonNull,
@@ -25,14 +26,9 @@ pub struct Node<T:Ord, U>{
 
 type Link<T, U> = NonNull<Node<T, U>>;
 
-fn log() {
-    println!("log");
-}
-
 impl<T:Ord, U> Map<T, U>{
     
     pub fn new() -> Self {
-        traits::test();
         Self{head:None ,size:0}
     }
     

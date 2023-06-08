@@ -38,5 +38,16 @@ mod avl_test{
         //hola.add(25, 1);
         //println!("{:#?}",hola);
     }
+    
+    #[test]
+    fn test_iter(){
+        let mut hola = Map::<u64,u64>::new();
+        let iter_hola = hola.level_iter().enumerate();
+        for elem in iter_hola {
+            println!("{:?}", elem);
+        }
+        panic!();
+        //let hola = 
+    }
 }
 
