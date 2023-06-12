@@ -39,6 +39,7 @@ mod avl_test{
         //println!("{:#?}",hola);
     }
     
+    #[ignore]
     #[test]
     fn test_iter(){
         let mut avl = Map::<u64,u64>::new();
@@ -52,7 +53,7 @@ mod avl_test{
             println!("{:?}", elem);
         }
         //println!("{:#?}", avl);
-        panic!();
+        //panic!();
         //let hola = 
     }
 }

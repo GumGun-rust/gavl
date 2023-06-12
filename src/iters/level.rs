@@ -3,6 +3,7 @@ use std::{
     marker::PhantomData,
     fmt::Debug,
 };
+
 use super::{
     LevelIter,
     //LevelIterMut,
@@ -20,17 +21,17 @@ use super::{
 impl<T:Ord+Debug, U> Map<T, U> {
     
     pub(super) fn set_indexes(&mut self) {
-        let mut index = 1u64;
-        let mut level = 0u32;
+        let /*mut*/ index = 1u64;
+        let /*mut*/ _level = 0u32;
         
         let mut pivot = match self.head {
             None => { return; },
-            Some(mut pivot) => pivot,
+            Some(/*mut*/pivot) => pivot,
         };
         
         let pivot_mut = unsafe{pivot.as_mut()};
         pivot_mut.index = index;
-        index += 1;
+        //index += 1;
         
         loop {
             let control = Self::get_next_node(pivot);
@@ -55,7 +56,7 @@ impl<T:Ord+Debug, U> Map<T, U> {
                 let father = node_ref.father.unwrap();
                 let father_ref = unsafe{father.as_ref()};
                 let mut level = 1;
-                let mut side;
+                let /*mut*/ side;
                 match posible_side {
                     Side::Left => {
                         father_ref.son[Side::Right]
@@ -66,7 +67,7 @@ impl<T:Ord+Debug, U> Map<T, U> {
                             side = Node::get_side(pivot);
                             level += 1;
                             match side {
-                                Some(posible_side) => {
+                                Some(_posible_side) => {
                                     panic!();
                                     //logic when its not a direct road
                                 },
@@ -98,8 +99,10 @@ impl<T:Ord+Debug, U> Map<T, U> {
         
         
         LevelIter{
+            /*I
             state:2,
             data_struct: self,
+            */
             current: self.head,
             phantom0: PhantomData,
             phantom1: PhantomData,
@@ -122,7 +125,7 @@ impl<'a, T:Ord, U> Iterator for LevelIter<'a, T, U> {
     type Item = (&'a T, &'a U);
     
     fn next(&mut self) -> Option<Self::Item> {
-        let holder = self.current;
+        let _holder = self.current;
         match self.current {
             Some(node) => {
                 let node_mut = unsafe{node.as_ref()};

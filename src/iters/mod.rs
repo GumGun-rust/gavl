@@ -1,15 +1,24 @@
 pub mod level;
+pub mod order;
 
 use super::{
-    Map,
+    //Map,
     Link,
 };
 
 use std::marker::PhantomData;
 
 pub struct LevelIter<'a, T:Ord, U> {
-    state: i8,
-    data_struct: &'a Map<T, U>,
+    //state: i8,
+    //data_struct: &'a Map<T, U>,
+    current: Option<Link<T, U>>,
+    phantom0: PhantomData<&'a T>,
+    phantom1: PhantomData<&'a U>,
+}
+
+
+pub struct OrderIterRef<'a, T:Ord, U> {
+    started: bool,
     current: Option<Link<T, U>>,
     phantom0: PhantomData<&'a T>,
     phantom1: PhantomData<&'a U>,
