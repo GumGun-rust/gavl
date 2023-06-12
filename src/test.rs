@@ -41,11 +41,17 @@ mod avl_test{
     
     #[test]
     fn test_iter(){
-        let mut hola = Map::<u64,u64>::new();
-        let iter_hola = hola.level_iter().enumerate();
-        for elem in iter_hola {
+        let mut avl = Map::<u64,u64>::new();
+        for number in 0..7 {
+            avl.add(number, 0).unwrap();
+        }
+        println!("{:#?}", avl);
+        let iter_level = avl.level_iter();//.enumerate();
+        
+        for elem in iter_level {
             println!("{:?}", elem);
         }
+        //println!("{:#?}", avl);
         panic!();
         //let hola = 
     }

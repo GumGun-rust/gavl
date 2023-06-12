@@ -10,7 +10,7 @@ use std::marker::PhantomData;
 pub struct LevelIter<'a, T:Ord, U> {
     state: i8,
     data_struct: &'a Map<T, U>,
-    current: Link<T, U>,
+    current: Option<Link<T, U>>,
     phantom0: PhantomData<&'a T>,
     phantom1: PhantomData<&'a U>,
 }

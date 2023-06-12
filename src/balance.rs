@@ -170,13 +170,12 @@ impl<T:Ord, U> Node<T, U>{
         true
     }
 
-    
     fn get_max_height(node: Link<T, U>)-> i32 {
         let node_ref = unsafe {node.as_ref()};
         max(node_ref.depth[Side::Left], node_ref.depth[Side::Right])
     }
     
-    fn get_side(node: Link<T, U>) -> Option<Side> {
+    pub(crate) fn get_side(node: Link<T, U>) -> Option<Side> {
         let node_father_ref = unsafe{node.as_ref().father?.as_ref()};
         if let Some(test) = node_father_ref.son[Side::Left] {
             if test == node {
@@ -190,7 +189,7 @@ impl<T:Ord, U> Node<T, U>{
         }
         None
     }
-    
+
     fn get_deepest_son_side(node:Link<T, U>) -> Side {
         let node_ref = unsafe{ node.as_ref() };
         match node_ref.depth[Side::Left].cmp(&node_ref.depth[Side::Right]) {
