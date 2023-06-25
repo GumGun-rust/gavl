@@ -1,3 +1,6 @@
-pub mod drop;
-pub mod clone;
+use super::*;
+
+mod drop;
+mod clone;
+mod debug;
 

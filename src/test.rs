@@ -1,8 +1,13 @@
+use super::*;
 
-#[cfg(test)]
+
+pub(crate) fn print_type_of<KeyType>(_: &KeyType) {
+    println!("{}", std::any::type_name::<KeyType>())
+}
+
 mod avl_test{
-    use super::super::*;
-    
+    use super::*;
+
     #[test]
     fn test(){
         //avl::log();
@@ -18,7 +23,7 @@ mod avl_test{
         let _ = hola.add(1, 0);
         let _ = hola.add(2, 1);
         println!("{:#?}", hola);
-        let _ = hola.add(2, 1);
+        //let _ = hola.add(2, 1);
         println!("{:#?}", hola);
         
         println!("{:#?}", hola);
@@ -38,7 +43,8 @@ mod avl_test{
         //hola.add(25, 1);
         //println!("{:#?}",hola);
     }
-    
+
+    /*
     #[ignore]
     #[test]
     fn test_iter(){
@@ -56,5 +62,5 @@ mod avl_test{
         //panic!();
         //let hola = 
     }
+    */
 }
-

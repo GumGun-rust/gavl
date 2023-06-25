@@ -12,10 +12,20 @@ use super::{
             Side,
         },
         Map,
-        Node,
-        Link
+        MapNode,
+        MapLink
     },
 };
+
+/*
+pub struct LevelIter<'a, T:Ord, U> {
+    //state: i8,
+    //data_struct: &'a Map<T, U>,
+    current: Option<MapLink<T, U>>,
+    phantom0: PhantomData<&'a T>,
+    phantom1: PhantomData<&'a U>,
+}
+*/
 
 
 impl<T:Ord+Debug, U> Map<T, U> {
@@ -47,8 +57,8 @@ impl<T:Ord+Debug, U> Map<T, U> {
         
     }
     
-    fn get_next_node(pivot:Link<T, U>) -> Option<Link<T, U>> {
-        let side = Node::get_side(pivot);
+    fn get_next_node(pivot:MapLink<T, U>) -> Option<MapLink<T, U>> {
+        let side = MapNode::get_side(pivot);
         match side {
             Some(posible_side) => {
                 let node_ref = unsafe{pivot.as_ref()};
@@ -64,7 +74,7 @@ impl<T:Ord+Debug, U> Map<T, U> {
                     Side::Right => {
                         let mut pivot = father;
                         loop {
-                            side = Node::get_side(pivot);
+                            side = MapNode::get_side(pivot);
                             level += 1;
                             match side {
                                 Some(_posible_side) => {

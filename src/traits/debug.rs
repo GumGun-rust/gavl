@@ -8,23 +8,23 @@ use core::{
 
 use super::{
     structs::Side,
-    Node,
+    MapNode,
     Map,
-    Link,
+    MapLink,
 };
 
-impl<T:Ord+Debug, U:Debug> Debug for Node<T, U>{
+impl<KeyType:Ord+Debug, ContentType:Debug> Debug for MapNode<KeyType, ContentType>{
     fn fmt(&self, formater: &mut Formatter) -> fmt::Result {
         match *self {
-            Node{
-                index:_,
+            MapNode{
                 ref father,
                 ref key,
                 ref content, 
                 ref depth, 
                 ref son,
+                ..
             } => {
-                let mut builder = formater.debug_struct("Node");
+                let mut builder = formater.debug_struct("MapNode");
                 if let Some(data) = son[Side::Left] {
                     unsafe {
                         let _ = builder.field("LeftSon", &&(data.as_ref()));
@@ -53,7 +53,7 @@ impl<T:Ord+Debug, U:Debug> Debug for Node<T, U>{
     }
 }
 
-impl<T:Ord+Debug, U:Debug> Debug for Map<T, U>{
+impl<KeyType:Ord+Debug, ContentType:Debug> Debug for Map<KeyType, ContentType>{
     fn fmt(&self, formater: &mut Formatter) -> fmt::Result {
         match *self {
             Map{
@@ -78,7 +78,7 @@ impl<T:Ord+Debug, U:Debug> Debug for Map<T, U>{
 }
 
 #[allow(dead_code)]
-fn dbg_prnt<T:Ord+Debug, U:Debug>(node:Link<T, U>) {
+fn dbg_prnt<KeyType:Ord+Debug, ContentType:Debug>(node:MapLink<KeyType, ContentType>) {
     let node_ref = unsafe{ node.as_ref() };
     println!("\n<><>\nnode {:?} content{:?}\n<><>\n", node, node_ref.content);
 }

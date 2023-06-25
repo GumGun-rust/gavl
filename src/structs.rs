@@ -5,9 +5,6 @@ use core::{
     },
 };
 
-pub use super::{
-    Node,
-};
 
 #[derive(Debug, Clone, Copy)]
 pub enum Side{
@@ -15,13 +12,13 @@ pub enum Side{
     Right
 }
 
-#[derive(Default)]
-pub struct BinarySon<T>{
-    content:[T; 2]
+#[derive(Debug, Default)]
+pub struct BinarySon<U>{
+    content:[U; 2]
 }
 
-impl<T> Index<Side> for BinarySon<T>{
-    type Output = T;
+impl<U> Index<Side> for BinarySon<U>{
+    type Output = U;
     fn index(&self, index: Side) -> &Self::Output {
         match index {
             Side::Left => &self.content[0],
@@ -30,7 +27,7 @@ impl<T> Index<Side> for BinarySon<T>{
     }
 }
 
-impl<T> IndexMut<Side> for BinarySon<T>{
+impl<U> IndexMut<Side> for BinarySon<U>{
     fn index_mut(&mut self, index: Side) -> &mut Self::Output {
         match index {
             Side::Left => &mut self.content[0],
@@ -38,3 +35,12 @@ impl<T> IndexMut<Side> for BinarySon<T>{
         }
     }
 }
+
+#[cfg(feature = "into_precompiled")]
+pub use into_precompiled::*;
+
+#[cfg(feature = "into_precompiled")]
+mod into_precompiled {
+    
+}
+

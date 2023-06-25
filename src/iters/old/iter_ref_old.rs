@@ -3,6 +3,13 @@ use std::{
     marker::PhantomData,
 };
 
+pub struct OrderIterRef<'a, T:Ord, U> {
+    started: bool,
+    current: Option<Link<T, U>>,
+    phantom0: PhantomData<&'a T>,
+    phantom1: PhantomData<&'a U>,
+}
+
 use super::{
     OrderIterRef,
     //LevelIter,

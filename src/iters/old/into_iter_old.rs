@@ -4,17 +4,32 @@ use std::{
 };
 
 use super::{
-    OrderIter,
-    IterNode,
+    IntoIter,
+    IntoIterEnum,
     super::{
         structs::{
             Side,
         },
         Map,
-        Node,
+        //Node,
         Link
     },
 };
+
+/*
+pub struct OrderIter<T:Ord, U> {
+    started: bool,
+    current: Option<Link<T, U>>,
+    holder: Map<T, U>,
+}
+
+pub struct IterNode<T:Ord, U> {
+    key: T,
+    content: U,
+    left_index: Option<usize>,
+    right_index: Option<usize>,
+}
+*/
 
 impl<T:Ord+Debug, U:Debug> Map<T, U> {
     
@@ -66,6 +81,7 @@ impl<T:Ord+Debug, U:Debug> Map<T, U> {
     
 }
 
+/*
 impl<T:Ord, U> OrderIter<T, U> {
     
     
@@ -100,4 +116,4 @@ impl<T:Ord, U> Iterator for OrderIter<T, U> {
         */
     }
 }
-
+*/
