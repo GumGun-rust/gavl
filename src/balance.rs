@@ -136,9 +136,11 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
 impl<KeyType:Ord, ContentType> MapNode<KeyType, ContentType>{
     
     
-    fn free_node(node: MapLink<KeyType, ContentType>) {
+    pub(super) fn free_node(node: MapLink<KeyType, ContentType>) {
+        //from NonNull to Box
         let _ = unsafe{Box::from_raw(node.as_ptr())};
-        panic!();
+        
+        //todo!();
     }
     
     pub(super) fn insert_node(mut pivot: MapLink<KeyType, ContentType>, mut node: MapLink<KeyType, ContentType>) -> bool{

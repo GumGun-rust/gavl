@@ -25,7 +25,6 @@ mod avl_test{
         println!("{:#?}", hola);
         //let _ = hola.add(2, 1);
         println!("{:#?}", hola);
-        
         println!("{:#?}", hola);
         /*
         hola.add(101, 1);
@@ -44,23 +43,28 @@ mod avl_test{
         //println!("{:#?}",hola);
     }
 
-    /*
-    #[ignore]
     #[test]
-    fn test_iter(){
+    fn empty() {
         let mut avl = Map::<u64,u64>::new();
-        for number in 0..7 {
-            avl.add(number, 0).unwrap();
-        }
-        println!("{:#?}", avl);
-        let iter_level = avl.level_iter();//.enumerate();
         
-        for elem in iter_level {
-            println!("{:?}", elem);
+        for elem in 4+0..4+7+5 {
+            avl.add(elem, 0).unwrap();
         }
-        //println!("{:#?}", avl);
-        //panic!();
-        //let hola = 
+        println!("{:#?}", &avl);
+        assert_eq!(avl.len(), 12);
+        avl.empty();
+        println!("{:#?}", &avl);
+        assert_eq!(avl.len(), 0);
     }
-    */
+    
+    #[test]
+    fn drop() {
+        let mut avl = Map::<u64,u64>::new();
+        
+        for elem in 4+0..4+7+5 {
+            avl.add(elem, 0).unwrap();
+        }
+        
+    }
+    
 }

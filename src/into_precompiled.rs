@@ -19,8 +19,8 @@ pub struct PrecompiledIterNode<KeyType:Ord, ContentType>{
     pub next_index: Option<usize>,
 }
 
+
 impl<KeyType:Ord+Clone, ContentType:Clone> Clone for PrecompiledIterNode<KeyType, ContentType>{
-    
     fn clone(&self) -> Self {
         Self{
             key:self.key.clone(),

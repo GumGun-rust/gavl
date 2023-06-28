@@ -52,15 +52,19 @@ pub struct IntoIter<KeyType:Ord, ContentType> {
     iter_data: IntoIterEnum<KeyType, ContentType>
 }
 
+pub struct EmptyIter<'a, KeyType:Ord, ContentType> {
+    map: &'a mut Map<KeyType, ContentType>,
+    iter_data: IntoIterEnum<KeyType, ContentType>
+}
+
 enum IntoIterEnum<KeyType:Ord, ContentType> {
     NewIter,
     Iter{
         next: Option<MapLink<KeyType, ContentType>>,
         phantom0: PhantomData<KeyType>,
         phantom1: PhantomData<ContentType>,
-        /*
-        */
-    }
+    },
+    
 }
 
 impl<KeyType:Ord, ContentType> Map<KeyType, ContentType> {

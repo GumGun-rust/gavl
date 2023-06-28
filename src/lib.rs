@@ -21,7 +21,7 @@ use std::{
 
 pub struct Map<KeyType:Ord, ContentType>{
     head: Option<MapLink<KeyType, ContentType>>,
-    size: u64,
+    size: usize,
 }
 
 struct MapNode<KeyType:Ord, ContentType>{
@@ -90,6 +90,13 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
         
     }
     
+    pub fn empty(&mut self) {
+        let empty_iter = self.empty_iter();
+        for _elem in empty_iter {
+            //just drop them
+        }
+    }
+    
     pub fn get(&mut self, key:KeyType) -> Result<&ContentType, AvlError> {
         panic!();
     }
@@ -102,8 +109,8 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
         panic!();
     }
     
-    pub fn lenght(&self) -> usize {
-        panic!();
+    pub fn len(&self) -> usize {
+        self.size
     }
 
 }

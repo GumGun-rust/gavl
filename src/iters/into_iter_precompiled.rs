@@ -110,7 +110,6 @@ impl<KeyType:Ord+Debug, ContentType:Debug> Map<KeyType, ContentType> {
         }
     }
     
-    
 }
 
 impl<KeyType:Ord, ContentType> IntoIterPrecompEnum<KeyType, ContentType> {
