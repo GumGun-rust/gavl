@@ -72,7 +72,6 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
         }
     }
     
-    
     fn rotate_right(&mut self, mut pivot:MapLink<KeyType, ContentType>) {
         let mut pivot_mut = unsafe{ pivot.as_mut() };
         let mut pivot_father = pivot_mut.father.unwrap();
@@ -139,25 +138,22 @@ impl<KeyType:Ord, ContentType> MapNode<KeyType, ContentType>{
     pub(super) fn free_node(node: MapLink<KeyType, ContentType>) {
         //from NonNull to Box
         let _ = unsafe{Box::from_raw(node.as_ptr())};
-        
+        //make it easyer to count the amount of dropped nodes
         //todo!();
     }
     
-    pub(super) fn insert_node(mut pivot: MapLink<KeyType, ContentType>, mut node: MapLink<KeyType, ContentType>) -> bool{
+    pub(super) fn insert_node(mut pivot: MapLink<KeyType, ContentType>, mut node: MapLink<KeyType, ContentType>) -> Result<(), ()>{
         loop{
             let key_order = unsafe{ node.as_ref().key.cmp(&pivot.as_ref().key) };
-            let side = match key_order {
-                Ordering::Less => {
-                    Side::Left
-                },
-                Ordering::Equal => {
+            
+            let side = match Side::try_from(key_order) {
+                Ok(side) => side,
+                Err(_) => {
                     Self::free_node(node);
-                    return false;
-                },
-                Ordering::Greater => {
-                    Side::Right
+                    return Err(());
                 }
             };
+            
             let pivot_mut = unsafe { pivot.as_mut() };
             match pivot_mut.son[side] {
                 None => {
@@ -176,7 +172,52 @@ impl<KeyType:Ord, ContentType> MapNode<KeyType, ContentType>{
             }
             //println!("{:?}", side);
         }
-        true
+        Ok(())
+    }
+    
+    #[allow(dead_code)]
+    fn get_replacement(node: MapLink<KeyType, ContentType>) -> Option<MapLink<KeyType, ContentType>> {
+        let node_mut = unsafe{node.as_ref()};
+        for son in [Side::Left, Side::Right] {
+            let son_complement = son.complement();
+            if let Some(mut pivot) = node_mut.son[son] {
+                loop {
+                    let pivot_ref = unsafe{pivot.as_ref()};
+                    match pivot_ref.son[son_complement] {
+                        None => {break;},
+                        Some(new_pivot) => {
+                            pivot = new_pivot;
+                        }
+                    }
+                }
+                return Some(pivot);
+            }
+        }
+        None
+    }
+    
+    pub(super) fn find_node(key:&KeyType, mut pivot:MapLink<KeyType, ContentType>) -> Option<MapLink<KeyType, ContentType>> { 
+        loop {
+            let pivot_ref = unsafe{pivot.as_ref()};
+            let side;
+            match key.cmp(&pivot_ref.key) {
+                order @ (Ordering::Less|Ordering::Greater) => {
+                    side = Side::try_from(order).unwrap();
+                    match pivot_ref.son[side] {
+                        None => {
+                            return None;
+                        },
+                        Some(next_pivot) => {
+                            pivot = next_pivot;
+                        },
+                    }
+                },
+                Ordering::Equal => {
+                    break;
+                },
+            }
+        }
+        Some(pivot)
     }
 
     fn get_max_height(node: MapLink<KeyType, ContentType>)-> i32 {
@@ -209,10 +250,11 @@ impl<KeyType:Ord, ContentType> MapNode<KeyType, ContentType>{
                 Side::Left
             },
             Ordering::Equal => {
-                panic!();
+                panic!("TODO validate logic of this panic");
             },
             
         }
     }
 }
+
 

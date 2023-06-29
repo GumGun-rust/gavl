@@ -4,4 +4,6 @@ use thiserror::Error;
 pub enum AvlError {
     #[error("key is already taken")]
     KeyOcupied,
+    #[error("key wasn't found")]
+    NotFound,
 }

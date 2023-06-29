@@ -7,6 +7,19 @@ pub(crate) fn print_type_of<KeyType>(_: &KeyType) {
 
 mod avl_test{
     use super::*;
+    
+    //#[ignore]
+    #[test]
+    fn test_find(){ 
+        let mut avl = Map::<u64,u64>::new();
+        
+        for elem in 0..7 {
+            avl.add(elem, 7-elem).unwrap();
+        }
+        println!("{:#?}", &avl);
+        avl.get(&2).unwrap();
+        avl.get(&13).unwrap_err();
+    }
 
     #[test]
     fn test(){

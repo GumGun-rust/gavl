@@ -79,7 +79,7 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
                 Ok(())
             },
             Some(data) => {
-                if !MapNode::insert_node(data, new_node) {
+                if let Err(_) = MapNode::insert_node(data, new_node) {
                     return Err(AvlError::KeyOcupied);
                 }
                 self.size += 1;
@@ -97,16 +97,32 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
         }
     }
     
-    pub fn get(&mut self, key:KeyType) -> Result<&ContentType, AvlError> {
-        panic!();
+    pub fn get(&mut self, key:&KeyType) -> Result<&ContentType, AvlError> {
+        let pivot = match self.head {
+            None => {return Err(AvlError::NotFound);}
+            Some(data) => data,
+        };
+        let node = MapNode::find_node(key, pivot).ok_or(AvlError::NotFound)?;
+        let node_ref = unsafe{node.as_ref()};
+        Ok(&node_ref.content)
     }
     
-    pub fn get_mut(&mut self, key:KeyType) -> Result<&mut ContentType, AvlError> {
-        panic!();
+    pub fn get_mut(&mut self, key:&KeyType) -> Result<&mut ContentType, AvlError> {
+        let pivot = match self.head {
+            None => {return Err(AvlError::NotFound);}
+            Some(data) => data,
+        };
+        let mut node = MapNode::find_node(key, pivot).ok_or(AvlError::NotFound)?;
+        let node_mut = unsafe{node.as_mut()};
+        Ok(&mut node_mut.content)
     }
     
-    pub fn delete(&mut self, key:KeyType) -> Result<ContentType, AvlError> {
-        panic!();
+    pub fn remove(&mut self, key:KeyType) -> Result<ContentType, AvlError> {
+        todo!();
+    }
+    
+    pub fn delete(&mut self, key:KeyType) -> Result<(), AvlError> {
+        todo!();
     }
     
     pub fn len(&self) -> usize {
