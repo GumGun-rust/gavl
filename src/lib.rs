@@ -3,17 +3,14 @@ mod balance;
 mod traits;
 mod iters;
 mod errors;
+mod into_precompiled;
+
 use errors::AvlError;
 pub use errors::*;
 
 #[cfg(test)]
 mod test;
 
-#[cfg(feature = "into_precompiled")]
-pub use into_precompiled::*;
-
-#[cfg(feature = "into_precompiled")]
-mod into_precompiled;
 
 use std::{
     ptr::NonNull,
@@ -31,7 +28,7 @@ struct MapNode<KeyType:Ord, ContentType>{
     depth: structs::BinarySon<i32>,
     son: structs::BinarySon<Option<MapLink<KeyType,ContentType>>>,
     #[cfg(feature = "into_precompiled")]
-    metadata: into_precompiled::PrecompiledMetadata,
+    metadata: into_precompiled::FeatureField,
 }
 
 type MapLink<KeyType, ContentType> = NonNull<MapNode<KeyType, ContentType>>;
@@ -67,8 +64,7 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
             father:None,
             depth: structs::BinarySon::default(),
             son: structs::BinarySon::default(),
-            #[cfg(feature = "into_precompiled")]
-            metadata:into_precompiled::PrecompiledMetadata::default(),
+            metadata:into_precompiled::FeatureField::default(),
         }))).expect("system ran out of memory");
         
         //println!("{:?}", new_node);
