@@ -1,4 +1,4 @@
-use core::{
+use std::{
     fmt,
     fmt::{
         Debug,
@@ -31,6 +31,7 @@ impl<KeyType:Ord+Debug, ContentType:Debug> Debug for MapNode<KeyType, ContentTyp
                     }
                 }
                 let _ = builder.field("LeftDepth", &&(depth[Side::Left]));
+                let _ = builder.field("LeftDir", &&(son[Side::Left]));
                 match father {
                     Some(data) => {
                         let _ = builder.field("father", &&(*data));
@@ -41,6 +42,7 @@ impl<KeyType:Ord+Debug, ContentType:Debug> Debug for MapNode<KeyType, ContentTyp
                 }
                 let _ = builder.field("key", &&(*key));
                 let _ = builder.field("content", &&(*content));
+                let _ = builder.field("rightDir", &&(son[Side::Right]));
                 let _ = builder.field("RightDepth", &&(depth[Side::Right]));
                 if let Some(data) = son[Side::Right] {
                     unsafe {

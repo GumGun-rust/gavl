@@ -67,7 +67,6 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
             metadata:into_precompiled::FeatureField::default(),
         }))).expect("system ran out of memory");
         
-        //println!("{:?}", new_node);
         match self.head {
             None => {
                 self.head = Some(new_node);
@@ -113,12 +112,35 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
         Ok(&mut node_mut.content)
     }
     
-    pub fn remove(&mut self, key:KeyType) -> Result<ContentType, AvlError> {
+    pub fn remove(&mut self, _key:&KeyType) -> Result<ContentType, AvlError> {
         todo!();
     }
     
-    pub fn delete(&mut self, key:KeyType) -> Result<(), AvlError> {
-        todo!();
+    pub fn delete(&mut self, key:&KeyType) -> Result<(), AvlError> {
+        match self.size {
+            0 => {
+                Err(AvlError::NotFound)
+            },
+            1 => {
+                
+                todo!();
+            }
+            _ => {
+                let target = MapNode::find_node(key, self.head.unwrap()).ok_or(AvlError::NotFound)?;
+                let balance_pivot = self.compute_deletion(target);
+                println!("--balance---piv----{:?}", balance_pivot);
+                self.size -= 1;
+                self.test_compute(balance_pivot);
+                Ok(())
+            }
+        }
+        /*
+        let head = match self.head {
+            Some(data) => data,
+            None => {return Err(AvlError::NotFound);}
+        };
+        */
+        
     }
     
     pub fn len(&self) -> usize {

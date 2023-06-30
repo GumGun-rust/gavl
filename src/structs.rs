@@ -39,6 +39,17 @@ impl Side {
     }
 }
 
+impl<U:Clone> Clone for BinarySon<U> {
+    fn clone(&self) -> Self {
+        Self{
+            content:[self.content[0].clone(), self.content[0].clone()]
+        }
+    }
+}
+
+impl<U:Copy> Copy for BinarySon<U> {}
+
+
 impl<U> Index<Side> for BinarySon<U> {
     type Output = U;
     fn index(&self, index: Side) -> &Self::Output {

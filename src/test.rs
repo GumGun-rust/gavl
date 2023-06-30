@@ -8,11 +8,56 @@ pub(crate) fn print_type_of<KeyType>(_: &KeyType) {
 mod avl_test{
     use super::*;
     
-    //#[ignore]
+    #[test]
+    fn test_deletion_simple(){ 
+        let mut avl = Map::<u64,u64>::new();
+        
+        for elem in 4+0..4+15 {
+            avl.add(elem*2, 100).unwrap();
+        }
+        avl.add(29, 0).unwrap();
+        println!("{:#?}", &avl);
+        //avl.add(1, 0).unwrap();
+        
+        avl.delete(&30).unwrap();
+        println!("{:#?}", &avl);
+    }
+    
+    #[test]
+    fn test_deletion_complex(){ 
+        let mut avl = Map::<u64,u64>::new();
+        
+        for elem in 4+0..4+31 {
+            avl.add(elem*2, 100).unwrap();
+        }
+        avl.add(37, 0).unwrap();
+        avl.add(31, 0).unwrap();
+        
+        /*
+        println!("{:#?}", &avl);
+        //avl.add(1, 0).unwrap();
+        
+        */
+        avl.delete(&37).unwrap();
+        println!("{:#?}", &avl);
+        todo!();
+    }
+    
+    #[test]
+    fn test_double_insert(){ 
+        let mut avl = Map::<u64,u64>::new();
+        
+        for elem in 0..7 {
+            avl.add(elem, 7-elem).unwrap();
+        }
+        let hola = avl.add(2, 12).unwrap_err();
+        println!("{:#?}", hola);
+    }
+
+    //expand this test
     #[test]
     fn test_find(){ 
         let mut avl = Map::<u64,u64>::new();
-        
         for elem in 0..7 {
             avl.add(elem, 7-elem).unwrap();
         }
@@ -21,6 +66,7 @@ mod avl_test{
         avl.get(&13).unwrap_err();
     }
 
+    
     #[test]
     fn test(){
         //avl::log();

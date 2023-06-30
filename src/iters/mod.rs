@@ -92,7 +92,7 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType> {
                     return unsafe{pivot.as_ref()}.father;
                 },
                 Some(Side::Right) => {
-                    pivot = unsafe{pivot.as_ref()}.father.unwrap();
+                    pivot = unsafe{pivot.as_ref()}.father.expect("should have father");
                 },
                 None => {
                     return None;
