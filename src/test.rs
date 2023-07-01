@@ -101,6 +101,20 @@ mod avl_test{
         avl.get(&2).unwrap();
         avl.get(&13).unwrap_err();
     }
+    
+    #[test]
+    fn test_creation() { 
+        let mut avl0 = Map::<u64,u64>::new();
+        let mut avl1 = Map::<u64,u64>::new();
+        for elem in 0..7 {
+            avl0.add(elem, 6-elem).unwrap();
+        }
+        for elem in 0..7 {
+            avl1.add(6-elem, elem).unwrap();
+        }
+        println!("{:#?}", &avl0);
+        println!("{:#?}", &avl1);
+    }
 
     #[test]
     fn empty() {
