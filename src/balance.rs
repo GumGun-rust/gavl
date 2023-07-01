@@ -16,9 +16,9 @@ use super::{
 
 impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
     
-    pub(super) fn compute_height(&mut self, mut pivot:MapLink<KeyType, ContentType>) {
+    pub(super) fn compute_balance_additive(&mut self, mut pivot:MapLink<KeyType, ContentType>) {
         let mut side_holder = MapNode::get_side(pivot);
-        println!("{:?}", pivot);
+        //println!("{:?}", pivot);
         while let Some(side) = side_holder {           
             let pivot_ref = unsafe {pivot.as_ref()};
             let mut pivot_father = pivot_ref.father.unwrap();
@@ -31,31 +31,31 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
             pivot_father_mut.depth[side] = pivot_new_depth;
             
             let balance_factor = pivot_father_mut.depth[Side::Left] - pivot_father_mut.depth[Side::Right];
-            println!("{:?}", balance_factor);
+            //println!("{:?}", balance_factor);
             
             if balance_factor >= 2 {
                 match MapNode::get_deepest_son_side(pivot) {
                     Side::Left => {
+                        self.rotate_right(pivot);
+                    },
+                    Side::Right => {
                         let pivot_mut = unsafe{pivot.as_ref()};
                         let pivot_son = pivot_mut.son[Side::Right].unwrap();
                         self.rotate_left(pivot_son);
                         self.rotate_right(pivot_son);
-                    },
-                    Side::Right => {
-                        self.rotate_right(pivot);
                     },
                 }
             }
             if balance_factor <= -2 {
                 match MapNode::get_deepest_son_side(pivot) {
                     Side::Right => {
+                        self.rotate_left(pivot);
+                    },
+                    Side::Left => {
                         let pivot_mut = unsafe{pivot.as_ref()};
                         let pivot_son = pivot_mut.son[Side::Left].unwrap();
                         self.rotate_right(pivot_son);
                         self.rotate_left(pivot_son);
-                    },
-                    Side::Left => {
-                        self.rotate_left(pivot);
                     },
                 }
             }
@@ -67,34 +67,46 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
     
     
 
-    pub(super) fn test_compute(&mut self, mut pivot:MapLink<KeyType, ContentType>) {
+    pub(super) fn compute_balance_subtractive(&mut self, mut pivot:MapLink<KeyType, ContentType>) {
         println!("-------------------------------------------");
-        println!("{:?}", pivot);
+        println!("pivot ====== {:?}", pivot);
         let mut pivot_mut = unsafe{pivot.as_mut()};
         let mut last_side:Option<Side> = None;
         
         loop {
             match pivot_mut.get_balance_factor() {
                 Some(balance_side) => {
-                    //let pivot_son = pivot_mut.son[balance_side].unwrap();
-                    match MapNode::get_deepest_son_side(pivot) {
+                    let pivot_ref_tmp = unsafe{pivot.as_ref()};
+                    let mut pivot_son_tmp = pivot_ref_tmp.son[balance_side].unwrap();
+                    let pivot_son_ref_tmp = unsafe{pivot_son_tmp.as_mut()};
+                    
+                    match MapNode::get_deepest_son_side(pivot_son_tmp) {
                         gs_side if gs_side == balance_side => {
-                            todo!();
+                            println!("\n\n\t\t\tbalance_side {:?}\n\t\t\tgs_side {:?}", balance_side, gs_side);
+                            println!("\t\t\tson {:?}\n\n", pivot_son_tmp);
+                            self.variable_rotate(pivot_son_tmp, balance_side.complement());
+                            //panic!("up");
+                            //println!("son\t\t{:?}\ngranson\t\t{:?}", pivot_son_tmp, pivot_granson_tmp);
                             
                         },
-                        _gs_side @ _ => {
-                            let pivot_mut = unsafe{pivot.as_mut()};
-                            let pivot_son = pivot_mut.son[balance_side].unwrap();
-                            self.rotate_right(pivot_son);
+                        gs_side @ _ => {
+                            println!("\n\n\t\t\tbalance_side {:?}\n\t\t\tgs_side {:?}\n\n", balance_side, gs_side);
+                            println!("\t\t\tson {:?}\n\n", pivot_son_tmp);
+                            let pivot_granson_tmp = pivot_son_ref_tmp.son[gs_side].unwrap();
+                            self.variable_rotate(pivot_granson_tmp, balance_side);
+                            self.variable_rotate(pivot_granson_tmp, gs_side);
+                            /*
+                            println!("-----\n\t\t{:?}\n", gs_side);
+                            self.variable_rotate(pivot_son_holder, gs_side);
+                            */
                         },
                     }
                     pivot = pivot_mut.father.unwrap();
                     pivot_mut = unsafe{pivot.as_mut()};
                 },
-                None => {
-                    
-                }
+                None => {}
             }
+            
             
             //println!("last side {:?}", last_side);
             if let Some(old_side) = last_side {
@@ -132,7 +144,7 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
 
     
     
-    pub(super) fn compute_deletion(&mut self, target:MapLink<KeyType, ContentType>) -> MapLink<KeyType, ContentType> {
+    pub(super) fn compute_subtraccion_pivot(&mut self, target:MapLink<KeyType, ContentType>) -> MapLink<KeyType, ContentType> {
         let tmp_holder = MapNode::get_replacement(target);
         println!("{:?}", tmp_holder);
         match tmp_holder {
@@ -176,6 +188,16 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
     }
     
     
+    fn variable_rotate(&mut self, pivot:MapLink<KeyType, ContentType>, side:Side) {
+        match side {
+            Side::Left => {
+                self.rotate_left(pivot);
+            },
+            Side::Right => {
+                self.rotate_right(pivot);
+            }
+        }
+    }
 
     fn rotate_right(&mut self, mut pivot:MapLink<KeyType, ContentType>) {
         let mut pivot_mut = unsafe{ pivot.as_mut() };
@@ -204,6 +226,9 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
         pivot_father_mut.father = Some(pivot);
         pivot_mut.son[Side::Right] = Some(pivot_father);
         pivot_mut.depth[Side::Right] = MapNode::get_max_height(pivot_father)+1;
+        println!("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\n");
+        println!("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\n");
+        println!("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\n");
     }
     
 
@@ -344,9 +369,6 @@ impl<KeyType:Ord, ContentType> MapNode<KeyType, ContentType>{
     
     
 
-    //temporal
-    #[allow(dead_code)]
-    //temporal
     fn get_replacement(node:MapLink<KeyType, ContentType>) -> Option<MapLink<KeyType, ContentType>> {
         let node_mut = unsafe{node.as_ref()};
         for son in [Side::Left, Side::Right] {
@@ -393,7 +415,7 @@ impl<KeyType:Ord, ContentType> MapNode<KeyType, ContentType>{
 
     fn get_deepest_son_side(node:MapLink<KeyType, ContentType>) -> Side {
         let node_ref = unsafe{ node.as_ref() };
-        let side_comparison = node_ref.depth[Side::Left].cmp(&node_ref.depth[Side::Right]);
+        let side_comparison = node_ref.depth[Side::Right].cmp(&node_ref.depth[Side::Left]);
         //should only arrive here when |balance_factor| >= 2 
         Side::try_from(side_comparison).expect("one should be bigger")
     }

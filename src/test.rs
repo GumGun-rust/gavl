@@ -9,44 +9,81 @@ mod avl_test{
     use super::*;
     
     #[test]
-    fn test_deletion_simple(){ 
+    fn individual_remove() {
+        let mut avl = Map::<u64,u64>::new();
+        avl.add(2, 69).unwrap();
+        let remove_value = avl.remove(&2).unwrap();
+        assert_eq!(remove_value, 69);
+        assert_eq!(avl.len(), 0);
+        avl.add(2, 69).unwrap();
+        avl.remove(&4).unwrap_err();
+        assert_eq!(avl.len(), 1);
+    }
+    
+    #[test]
+    fn individual_delete() {
+        let mut avl = Map::<u64,u64>::new();
+        avl.add(2, 100).unwrap();
+        avl.delete(&2).unwrap();
+        assert_eq!(avl.len(), 0);
+        avl.add(2, 100).unwrap();
+        avl.delete(&4).unwrap_err();
+        assert_eq!(avl.len(), 1);
+    }
+    
+    #[test]
+    fn test_deletion_double_balance() { 
+        let mut avl = Map::<u64,u64>::new();
+        for elem in 4+0..4+15 {
+            avl.add(elem*2, 100).unwrap();
+        }
+        avl.add(17, 100).unwrap();
+        println!("{:#?}", &avl);
+        avl.delete(&22).unwrap();
+        println!("{:#?}", &avl);
+    }
+    
+    #[test]
+    fn test_deletion_simple_balance() { 
+        let mut avl = Map::<u64,u64>::new();
+        for elem in 4+0..4+15 {
+            avl.add(elem*2, 100).unwrap();
+        }
+        avl.add(15, 100).unwrap();
+        avl.delete(&22).unwrap();
+        println!("{:#?}", &avl);
+    }
+    
+    #[test]
+    fn test_deletion_index_propagation() { 
         let mut avl = Map::<u64,u64>::new();
         
         for elem in 4+0..4+15 {
             avl.add(elem*2, 100).unwrap();
         }
-        avl.add(29, 0).unwrap();
+        avl.add(1, 0).unwrap();
         println!("{:#?}", &avl);
-        //avl.add(1, 0).unwrap();
-        
-        avl.delete(&30).unwrap();
+        avl.delete(&1).unwrap();
         println!("{:#?}", &avl);
     }
     
     #[test]
-    fn test_deletion_complex(){ 
+    fn test_deletion_interrupted_index_propagation() { 
         let mut avl = Map::<u64,u64>::new();
         
         for elem in 4+0..4+31 {
             avl.add(elem*2, 100).unwrap();
         }
-        avl.add(37, 0).unwrap();
-        avl.add(31, 0).unwrap();
-        
-        /*
+        avl.add(1, 0).unwrap();
+        avl.add(13, 0).unwrap();
         println!("{:#?}", &avl);
-        //avl.add(1, 0).unwrap();
-        
-        */
-        avl.delete(&37).unwrap();
+        avl.delete(&1).unwrap();
         println!("{:#?}", &avl);
-        todo!();
     }
     
     #[test]
-    fn test_double_insert(){ 
+    fn test_double_insert() {
         let mut avl = Map::<u64,u64>::new();
-        
         for elem in 0..7 {
             avl.add(elem, 7-elem).unwrap();
         }
@@ -54,9 +91,8 @@ mod avl_test{
         println!("{:#?}", hola);
     }
 
-    //expand this test
     #[test]
-    fn test_find(){ 
+    fn test_find() { 
         let mut avl = Map::<u64,u64>::new();
         for elem in 0..7 {
             avl.add(elem, 7-elem).unwrap();
@@ -66,46 +102,9 @@ mod avl_test{
         avl.get(&13).unwrap_err();
     }
 
-    
-    #[test]
-    fn test(){
-        //avl::log();
-        let mut hola = Map::<u64,u64>::new();
-        //println!("{:#?}",hola);
-        let _ = hola.add(3, 2);
-        let _ = hola.add(4, 2);
-        let _ = hola.add(5, 2);
-        let _ = hola.add(6, 2);
-        let _ = hola.add(7, 2);
-        let _ = hola.add(8, 2);
-        let _ = hola.add(9, 2);
-        let _ = hola.add(1, 0);
-        let _ = hola.add(2, 1);
-        println!("{:#?}", hola);
-        //let _ = hola.add(2, 1);
-        println!("{:#?}", hola);
-        println!("{:#?}", hola);
-        /*
-        hola.add(101, 1);
-        hola.add(102, 1);
-        hola.add(103, 1);
-        hola.add(104, 1);
-        */
-        //println!("{:#?}",hola);
-        /*
-        println!("\n\n\n\n");
-        hola.add(55, 0);
-        println!("{:#?}",hola);
-        */
-        //hola.add(125, 1);
-        //hola.add(25, 1);
-        //println!("{:#?}",hola);
-    }
-
     #[test]
     fn empty() {
         let mut avl = Map::<u64,u64>::new();
-        
         for elem in 4+0..4+7+5 {
             avl.add(elem, 0).unwrap();
         }

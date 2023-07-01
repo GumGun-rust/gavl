@@ -53,10 +53,14 @@ type SetLink<KeyType> = NonNull<SetNode<KeyType>>;
 
 impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
     
+    
+
     pub fn new() -> Self {
         Self{head:None ,size:0}
     }
     
+    
+
     pub fn add(&mut self, key:KeyType, content:ContentType) -> Result<(), AvlError> {
         let new_node = NonNull::new(Box::into_raw(Box::new(MapNode{
             key,
@@ -78,13 +82,15 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
                     return Err(AvlError::KeyOcupied);
                 }
                 self.size += 1;
-                self.compute_height(new_node);
+                self.compute_balance_additive(new_node);
                 Ok(())
             }
         }
         
     }
     
+    
+
     pub fn empty(&mut self) {
         let empty_iter = self.empty_iter();
         for _elem in empty_iter {
@@ -92,6 +98,8 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
         }
     }
     
+    
+
     pub fn get(&mut self, key:&KeyType) -> Result<&ContentType, AvlError> {
         let pivot = match self.head {
             None => {return Err(AvlError::NotFound);}
@@ -112,40 +120,71 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
         Ok(&mut node_mut.content)
     }
     
-    pub fn remove(&mut self, _key:&KeyType) -> Result<ContentType, AvlError> {
-        todo!();
+    
+
+    pub fn remove(&mut self, key:&KeyType) -> Result<ContentType, AvlError> {
+        match self.size {
+            0 => {
+                Err(AvlError::NotFound)
+            },
+            1 => {
+                let head = self.head.unwrap();
+                let head_ref = unsafe{head.as_ref()};
+                if !head_ref.key.cmp(key).is_eq() {
+                    return Err(AvlError::NotFound);
+                }
+                self.size = 0;
+                self.head = None;
+                let target = unsafe{Box::from_raw(head.as_ptr())};
+                Ok(target.content)
+            }
+            _ => {
+                let target = MapNode::find_node(key, self.head.unwrap()).ok_or(AvlError::NotFound)?;
+                let balance_pivot = self.compute_subtraccion_pivot(target);
+                self.compute_balance_subtractive(balance_pivot);
+                self.size -= 1;
+                let target = unsafe{Box::from_raw(target.as_ptr())};
+                Ok(target.content)
+            }
+        }
     }
     
+    
+
     pub fn delete(&mut self, key:&KeyType) -> Result<(), AvlError> {
         match self.size {
             0 => {
                 Err(AvlError::NotFound)
             },
             1 => {
-                
-                todo!();
+                let head = self.head.unwrap();
+                let head_ref = unsafe{head.as_ref()};
+                if !head_ref.key.cmp(key).is_eq() {
+                    return Err(AvlError::NotFound);
+                }
+                self.size = 0;
+                self.head = None;
+                MapNode::free_node(head);
+                Ok(())
             }
             _ => {
                 let target = MapNode::find_node(key, self.head.unwrap()).ok_or(AvlError::NotFound)?;
-                let balance_pivot = self.compute_deletion(target);
-                println!("--balance---piv----{:?}", balance_pivot);
+                let balance_pivot = self.compute_subtraccion_pivot(target);
+                self.compute_balance_subtractive(balance_pivot);
                 self.size -= 1;
-                self.test_compute(balance_pivot);
+                MapNode::free_node(target);
                 Ok(())
             }
         }
-        /*
-        let head = match self.head {
-            Some(data) => data,
-            None => {return Err(AvlError::NotFound);}
-        };
-        */
-        
     }
     
+    
+
     pub fn len(&self) -> usize {
         self.size
     }
+
+    
 
 }
 
