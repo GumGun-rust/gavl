@@ -26,7 +26,7 @@ pub struct IterRef<'a, KeyType:Ord, ContentType> (
 );
 
 enum IterRefEnum<'a, KeyType:Ord, ContentType> {
-    NewIter(&'a mut Map<KeyType, ContentType>),
+    NewIter(&'a Map<KeyType, ContentType>),
     Iter{
         current: MapLink<KeyType, ContentType>,
         phantom0: PhantomData<&'a mut KeyType>,

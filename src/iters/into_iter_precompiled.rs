@@ -35,7 +35,7 @@ enum IntoIterPrecompEnum<KeyType:Ord, ContentType> {
 }
 
 
-impl<KeyType:Ord+Debug, ContentType:Debug> Map<KeyType, ContentType> {
+impl<KeyType:Ord, ContentType> Map<KeyType, ContentType> {
     
     pub fn into_iter_precompiled(mut self) -> IntoIterPrecomp<KeyType, ContentType> {
         self.calculate_indexes();

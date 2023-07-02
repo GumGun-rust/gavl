@@ -16,7 +16,7 @@ use super::{
 };
 
 impl<KeyType:Ord, ContentType> Map<KeyType, ContentType> {
-    pub fn iter_ref(&mut self) -> IterRef<KeyType, ContentType> {
+    pub fn iter_ref(&self) -> IterRef<KeyType, ContentType> {
         IterRef(
             IterRefEnum::NewIter(self)
         )

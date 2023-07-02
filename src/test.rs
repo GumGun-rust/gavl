@@ -9,6 +9,26 @@ mod avl_test{
     use super::*;
     
     #[test]
+    fn clone() {
+        const SIZE:i32 = 15;
+        let mut map:Map<_,_> = (0..SIZE).map(|x|SIZE-x).enumerate().collect();
+        println!("{:#?}", map);
+        let map_clone = map.clone();
+        map.empty();
+        println!("{:#?}", map_clone);
+        println!("{:#?}", map);
+    }
+    
+    #[test]
+    fn collect() {
+        const SIZE:i32 = 31;
+        let vec:Vec<_> = (0..SIZE).map(|x|SIZE-x).enumerate().collect();
+        println!("{:?}", vec);
+        let map:Map<_,_> = (0..SIZE).map(|x|SIZE-x).enumerate().collect();
+        println!("{:#?}", map);
+    }
+    
+    #[test]
     fn individual_remove() {
         let mut avl = Map::<u64,u64>::new();
         avl.add(2, 69).unwrap();
@@ -32,7 +52,7 @@ mod avl_test{
     }
     
     #[test]
-    fn test_deletion_double_balance() { 
+    fn deletion_double_balance() { 
         let mut avl = Map::<u64,u64>::new();
         for elem in 4+0..4+15 {
             avl.add(elem*2, 100).unwrap();
@@ -44,7 +64,7 @@ mod avl_test{
     }
     
     #[test]
-    fn test_deletion_simple_balance() { 
+    fn deletion_simple_balance() { 
         let mut avl = Map::<u64,u64>::new();
         for elem in 4+0..4+15 {
             avl.add(elem*2, 100).unwrap();
@@ -55,7 +75,7 @@ mod avl_test{
     }
     
     #[test]
-    fn test_deletion_index_propagation() { 
+    fn deletion_index_propagation() { 
         let mut avl = Map::<u64,u64>::new();
         
         for elem in 4+0..4+15 {
@@ -68,7 +88,7 @@ mod avl_test{
     }
     
     #[test]
-    fn test_deletion_interrupted_index_propagation() { 
+    fn deletion_interrupted_index_propagation() { 
         let mut avl = Map::<u64,u64>::new();
         
         for elem in 4+0..4+31 {
@@ -82,7 +102,7 @@ mod avl_test{
     }
     
     #[test]
-    fn test_double_insert() {
+    fn double_insert() {
         let mut avl = Map::<u64,u64>::new();
         for elem in 0..7 {
             avl.add(elem, 7-elem).unwrap();
@@ -92,7 +112,7 @@ mod avl_test{
     }
 
     #[test]
-    fn test_find() { 
+    fn find() { 
         let mut avl = Map::<u64,u64>::new();
         for elem in 0..7 {
             avl.add(elem, 7-elem).unwrap();
@@ -103,7 +123,7 @@ mod avl_test{
     }
     
     #[test]
-    fn test_creation() { 
+    fn creation() { 
         let mut avl0 = Map::<u64,u64>::new();
         let mut avl1 = Map::<u64,u64>::new();
         for elem in 0..7 {

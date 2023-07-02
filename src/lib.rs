@@ -119,8 +119,8 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
         let node_mut = unsafe{node.as_mut()};
         Ok(&mut node_mut.content)
     }
-    
-    
+
+
 
     pub fn remove(&mut self, key:&KeyType) -> Result<ContentType, AvlError> {
         match self.size {

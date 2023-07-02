@@ -15,9 +15,9 @@ use super::{
 };
 
 impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
-    
 
-    
+
+
     pub(super) fn compute_balance_additive(&mut self, mut pivot:MapLink<KeyType, ContentType>) {
         let mut side_holder = MapNode::get_side(pivot);
         while let Some(side) = side_holder {           
@@ -50,8 +50,8 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
             side_holder = MapNode::get_side(pivot);
         }
     }
-    
-    
+
+
 
     pub(super) fn compute_balance_subtractive(&mut self, mut pivot:MapLink<KeyType, ContentType>) {
         let mut pivot_mut = unsafe{pivot.as_mut()};
@@ -98,8 +98,8 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
         }
     }
 
-    
-    
+
+
     pub(super) fn compute_subtraccion_pivot(&mut self, target:MapLink<KeyType, ContentType>) -> MapLink<KeyType, ContentType> {
         let tmp_holder = MapNode::get_replacement(target);
         match tmp_holder {
