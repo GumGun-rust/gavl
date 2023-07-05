@@ -52,7 +52,7 @@ pub struct IntoIter<KeyType:Ord, ContentType> {
     iter_data: IntoIterEnum<KeyType, ContentType>
 }
 
-pub struct EmptyIter<'a, KeyType:Ord, ContentType> {
+pub(crate) struct EmptyIter<'a, KeyType:Ord, ContentType> {
     map: &'a mut Map<KeyType, ContentType>,
     iter_data: IntoIterEnum<KeyType, ContentType>
 }
