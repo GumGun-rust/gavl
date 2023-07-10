@@ -21,13 +21,13 @@ pub struct Map<KeyType:Ord, ContentType>{
     size: usize,
 }
 
+#[allow(dead_code)]
 struct MapNode<KeyType:Ord, ContentType>{
     key: KeyType,
     content: ContentType,
     father: Option<MapLink<KeyType,ContentType>>,
     depth: structs::BinarySon<i32>,
     son: structs::BinarySon<Option<MapLink<KeyType,ContentType>>>,
-    #[cfg(feature = "into_precompiled")]
     metadata: into_precompiled::FeatureField,
 }
 
