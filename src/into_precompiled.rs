@@ -1,8 +1,3 @@
-use super::{
-    structs::{
-        BinarySon
-    },
-};
 
 /*
 #[derive(Debug, Default)]
@@ -19,7 +14,6 @@ pub use precompiled_feature::*;
 
 #[cfg(not(feature = "into_precompiled"))]
 pub mod precompiled_feature {
-    use super::*;
     
     #[derive(Debug, Default)]
     pub(crate) struct FeatureField();
@@ -28,7 +22,13 @@ pub mod precompiled_feature {
 
 #[cfg(feature = "into_precompiled")]
 pub mod precompiled_feature {
-    use super::*;
+    use super::{
+        super::{
+            structs::{
+                BinarySon
+            },
+        }
+    };
     
     #[derive(Debug, Default)]
     pub(crate) struct FeatureField{
