@@ -2,6 +2,12 @@
 name = "gavl"
 version = "0.1.0"
 edition = "2021"
+authors = ["GumGun"]
+description = "A fast implementation for a map and a set using an AVL tree"
+readme = "README.md"
+repository = "https://github.com/GumGun-rust/avl"
+license = "MIT"
+
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

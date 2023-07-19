@@ -90,6 +90,11 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
     }
     
     
+    
+    pub fn insert(&mut self) -> Option<ContentType> {
+        panic!();
+    }
+    
 
     pub fn empty(&mut self) {
         let empty_iter = self.empty_iter();
