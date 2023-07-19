@@ -55,6 +55,9 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
     
     
 
+    ///This function returns a Map
+    ///```
+    ///let avl:gavl::Map<i32, i32> = gavl::Map::new();
     pub fn new() -> Self {
         Self{head:None ,size:0}
     }
