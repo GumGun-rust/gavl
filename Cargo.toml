@@ -4,7 +4,7 @@ version = "0.1.1"
 edition = "2021"
 authors = ["GumGun"]
 description = "A fast implementation for a map and a set using an AVL tree"
-readme = "README.md"
+readme = true
 repository = "https://github.com/GumGun-rust/avl"
 license = "MIT"
 

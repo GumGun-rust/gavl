@@ -1,9 +1,13 @@
+//! test doc
 use thiserror::Error;
 
-#[derive(Error, Debug)]
-pub enum AvlError {
+
+/// hola 
+#[derive(Error, Debug, PartialEq, Eq)]
+pub enum Error {
+    /// Occurs when key is taken
     #[error("key is already taken")]
-    KeyOcupied,
+    KeyOcupied, 
     #[error("key wasn't found")]
     NotFound,
 }

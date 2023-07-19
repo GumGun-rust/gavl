@@ -1,3 +1,6 @@
+d:
+	cargo doc
+
 t:
 	cargo test 
 

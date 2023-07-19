@@ -3,12 +3,15 @@ use std::{
         Ordering,
         max
     },
+    ptr::NonNull,
 };
 
 use super::{
     structs::{
         Side,
+        BinarySon,
     },
+    into_precompiled,
     MapNode,
     Map,
     MapLink,
@@ -215,7 +218,7 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
 
 
     //makes source take the place of dest in the tree
-    fn replace_node(&mut self, dest:MapLink<KeyType, ContentType>, mut src:MapLink<KeyType, ContentType>) {
+    pub(crate) fn replace_node(&mut self, dest:MapLink<KeyType, ContentType>, mut src:MapLink<KeyType, ContentType>) {
         let dest_ref = unsafe{dest.as_ref()};
         let src_mut = unsafe{src.as_mut()};
         src_mut.son = dest_ref.son;
@@ -250,6 +253,19 @@ impl<KeyType:Ord, ContentType> MapNode<KeyType, ContentType>{
     
     
 
+    #[inline(always)]
+    pub(super) fn new_map_link(key:KeyType, content:ContentType) -> MapLink<KeyType, ContentType> {
+        NonNull::new(Box::into_raw(Box::new(MapNode{
+            key,
+            content,
+            father:None,
+            depth: BinarySon::default(),
+            son: BinarySon::default(),
+            metadata:into_precompiled::FeatureField::default(),
+        }))).expect("system ran out of memory")
+        
+    }
+    
     pub(super) fn find_node(key:&KeyType, mut pivot:MapLink<KeyType, ContentType>) -> Option<MapLink<KeyType, ContentType>> { 
         loop {
             let pivot_ref = unsafe{pivot.as_ref()};
@@ -276,6 +292,17 @@ impl<KeyType:Ord, ContentType> MapNode<KeyType, ContentType>{
     
     
 
+    #[inline(always)]
+    pub(super) fn unpack_node(node:MapLink<KeyType, ContentType>) -> ContentType {
+        //from NonNull to Box and returns content
+        //make it easyer to count the amount of dropped nodes
+        let holder = unsafe{Box::from_raw(node.as_ptr())};
+        holder.content
+    }
+    
+    
+    
+    #[inline(always)]
     pub(super) fn free_node(node:MapLink<KeyType, ContentType>) {
         //from NonNull to Box
         //make it easyer to count the amount of dropped nodes
@@ -284,15 +311,14 @@ impl<KeyType:Ord, ContentType> MapNode<KeyType, ContentType>{
     
     
     
-    pub(super) fn insert_node(mut pivot:MapLink<KeyType, ContentType>, mut node:MapLink<KeyType, ContentType>) -> Result<(), ()>{
+    pub(super) fn insert_node(mut pivot:MapLink<KeyType, ContentType>, mut node:MapLink<KeyType, ContentType>) -> Result<(), MapLink<KeyType, ContentType>>{
         loop{
             let key_order = unsafe{ node.as_ref().key.cmp(&pivot.as_ref().key) };
             
             let side = match Side::try_from(key_order) {
                 Ok(side) => side,
                 Err(_) => {
-                    Self::free_node(node);
-                    return Err(());
+                    return Err(pivot);
                 }
             };
             
