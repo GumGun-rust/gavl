@@ -1,5 +1,14 @@
-//! # Hola
-//! Test long test
+//! # AVL data structures
+//! This crate implements a `Map` based on an AVL in the near future it may include a `Set` as well 
+//! # Panics
+//! the only thing that makes this crate panics is Box panic
+//! # Safety
+//! As of now I haven run the analisis or test to determine if it is Send and Sync in in the near
+//! future I will implement something `rwlocks` 
+//! # Features
+//! * `into_precomputed` - Enables the into precomputed iterator
+//! * `unchecked_mut` - Enables a iterator that yields a mutable reference to the key (Not yet in
+//! the documentation)
 
 mod structs;
 mod balance;
@@ -7,12 +16,16 @@ mod traits;
 mod iters;
 
 mod errors;
-mod into_precompiled;
+mod into_precomputed;
 
 
-#[doc(inline)]
-use errors::Error;
-pub use errors::*;
+
+#[cfg(any(feature = "into_precomputed", doc))]
+pub use into_precomputed::PrecompiledIterNode;
+#[cfg(any(feature = "into_precomputed", doc))]
+pub use iters::IntoIterPrecomp;
+
+
 
 #[cfg(test)]
 mod test;
@@ -32,6 +45,13 @@ pub struct Map<KeyType:Ord, ContentType>{
 }
 
 
+pub use errors::Error;
+pub use iters::IntoIter;
+pub use iters::IterRef;
+pub use iters::IterRefMut;
+
+
+
 #[allow(dead_code)]
 struct MapNode<KeyType:Ord, ContentType>{
     key: KeyType,
@@ -39,7 +59,7 @@ struct MapNode<KeyType:Ord, ContentType>{
     father: Option<MapLink<KeyType,ContentType>>,
     depth: structs::BinarySon<i32>,
     son: structs::BinarySon<Option<MapLink<KeyType,ContentType>>>,
-    metadata: into_precompiled::FeatureField,
+    metadata: into_precomputed::FeatureField,
 }
 
 type MapLink<KeyType, ContentType> = NonNull<MapNode<KeyType, ContentType>>;
@@ -56,7 +76,7 @@ pub struct SetNode<KeyType:Ord>{
     father: Option<SetLink<KeyType>>,
     depth: structs::BinarySon<i32>,
     son: structs::BinarySon<Option<SetLink<KeyType>>>,
-    #[cfg(feature = "into_precompiled")]
+    #[cfg(feature = "into_precomputed")]
     index: u64,
 }
 
@@ -97,11 +117,8 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
     /// # Returns
     /// ## Success
     /// * `Ok(())`
-    /// 
     /// ## Errors
-    /// 
-    /// * `Err(Error::KeyOcupied)`:   is returned if the key is already present 
-    /// 
+    /// * `Err(Error::KeyOcupied)`:   Is returned if the key is already present 
     pub fn add(&mut self, key:KeyType, content:ContentType) -> Result<(), Error> {
         let new_node = MapNode::new_map_link(key, content);
         
@@ -125,14 +142,11 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
     }
     
     
-    //// Inserts a node into the `Map` and replaces the content if it already exists returning old
     /// Replaces or adds node to `Map`
     /// * If the key is not present in the map it works just like `add`
     /// 
     /// * If it already present it will remplace the `content` with new one return
     /// the old value
-    /// 
-    ///
     /// # Examples
     /// ```
     /// let mut map = gavl::Map::<&str, i32>::new();
@@ -207,7 +221,6 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
     
 
     /// Deletes all the nodes in the `Map`
-    /// will run 
     ///
     /// # Examples
     /// ```
@@ -220,7 +233,6 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
     /// map.empty();
     /// assert_eq!(map.len(), 0);
     /// ```
-    /// 
     pub fn empty(&mut self) {
         let empty_iter = self.empty_iter();
         for _elem in empty_iter {
@@ -230,6 +242,19 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
     
     
 
+    /// Gets a reference to the `content` associated to the `key` in `Map` 
+    /// # Examples
+    /// ```
+    /// let mut map = gavl::Map::<String, i32>::new();
+    /// map.add(12.to_string(), 12);
+    /// let holder = map.get(&12.to_string()); // holder = Ok(&12)
+    /// 
+    /// assert_eq!(holder, Ok(&12));
+    /// ```
+    /// # Returns
+    /// ## Success
+    /// * `Ok(&ContentType)`:   A reference to the content associated to that key
+    /// ## Errors
     pub fn get(&mut self, key:&KeyType) -> Result<&ContentType, Error> {
         let pivot = match self.head {
             None => {return Err(Error::NotFound);}
@@ -242,6 +267,23 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
     
     
     
+    /// Gets a mutable reference to the `content` associated to the `key` in `Map` 
+    /// # Examples
+    /// ```
+    /// let mut map = gavl::Map::<i32, i32>::new();
+    /// map.add(10, 1);
+    /// let holder = map.get_mut(&10); // holder = Ok(&1)
+    /// 
+    /// *holder.unwrap() += 9; // holder = Ok(&12+8)
+    /// let holder = map.get(&10);
+    /// assert_eq!(holder, Ok(&10));
+    /// 
+    /// ```
+    /// # Returns
+    /// ## Success
+    /// * `Ok(&mut ContentType)`:   A mutable reference to the content associated to that key
+    /// ## Errors
+    /// * `Err(Error::NotFound)`:   Is returned if the key not present
     pub fn get_mut(&mut self, key:&KeyType) -> Result<&mut ContentType, Error> {
         let pivot = match self.head {
             None => {return Err(Error::NotFound);}
@@ -254,6 +296,22 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
 
 
 
+    /// Deletes one node the `Map` drops the key and the content if the key is found
+    /// # Examples
+    /// ```
+    /// let mut map = gavl::Map::<String, i32>::new();
+    /// map.add(12.to_string(), 12);
+    /// assert_eq!(map.len(), 1);
+    /// 
+    /// let holder = map.remove(&12.to_string());
+    /// assert_eq!(map.len(), 0);
+    /// assert_eq!(holder, Ok(12));
+    /// ```
+    /// # Returns
+    /// ## Success
+    /// * `Ok(())`
+    /// ## Errors
+    /// * `Err(Error::NotFound)`:   Is returned if the key not present
     pub fn remove(&mut self, key:&KeyType) -> Result<ContentType, Error> {
         match self.size {
             0 => {
@@ -283,6 +341,22 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
     
     
 
+    /// Deletes one node the `Map` drops the key and the content if the key is found
+    ///
+    /// # Examples
+    /// ```
+    /// let mut map = gavl::Map::<String, i32>::new();
+    /// map.add(12.to_string(), 12);
+    /// assert_eq!(map.len(), 1);
+    /// 
+    /// map.delete(&12.to_string());
+    /// assert_eq!(map.len(), 0);
+    /// ```
+    /// # Returns
+    /// ## Success
+    /// * `Ok(())`
+    /// ## Errors
+    /// * `Err(Error::NotFound)`:   Is returned if the key not present
     pub fn delete(&mut self, key:&KeyType) -> Result<(), Error> {
         match self.size {
             0 => {
@@ -322,12 +396,42 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
     /// }
     /// assert_eq!(map.len(), 10);
     /// ```
+    #[inline(always)]
     pub fn len(&self) -> usize {
         self.size
     }
 
     
+    pub fn into_iter(self) -> iters::IntoIter<KeyType, ContentType> {
+        iters::IntoIter::new(self)
+    }
+    
+    
 
+    pub fn iter_ref(&self) -> iters::IterRef<KeyType, ContentType> {
+        iters::IterRef::new(self)
+    }
+    
+
+    
+    pub fn iter_ref_mut(&mut self) -> iters::IterRefMut<KeyType, ContentType> {
+        iters::IterRefMut::new(self)
+    }
+    
+
+
+    /// # Dependant on feature into_precomputed
+    /// Return an iterator check [`IntoIterPrecomp`][`IntoIterPrecomp`] for extra info
+    /// * This method consumes the Map
+    /// 
+    /// 
+    /// [`IntoIterPrecomp`]: iters::IntoIterPrecomp
+    #[cfg(any(feature = "into_precomputed", doc))]
+    pub fn into_iter_precomputed(self) -> iters::IntoIterPrecomp<KeyType, ContentType> {
+        iters::IntoIterPrecomp::new(self)
+    }
+
+    
 }
 
 

@@ -15,10 +15,10 @@ use super::{
     },
 };
 
-impl<KeyType:Ord, ContentType> Map<KeyType, ContentType> {
-    pub fn iter_ref(&self) -> IterRef<KeyType, ContentType> {
+impl<'a, KeyType:Ord, ContentType> IterRef<'a, KeyType, ContentType> {
+    pub(crate) fn new(map:&'a Map<KeyType, ContentType>) -> IterRef<'a, KeyType, ContentType> {
         IterRef(
-            IterRefEnum::NewIter(self)
+            IterRefEnum::NewIter(map)
         )
     }
 }

@@ -6,8 +6,10 @@ pub mod into_iter;
 #[cfg(feature = "unchecked_mut")]
 pub mod iter_ref_mut_unchecked;
 
-#[cfg(feature = "into_precompiled")]
-pub mod into_iter_precompiled;
+#[cfg(any(feature = "into_precomputed", doc))]
+pub mod into_iter_precomputed;
+#[cfg(any(feature = "into_precomputed", doc))]
+pub use into_iter_precomputed::*;
 
 use super::{
     structs::{
@@ -25,6 +27,8 @@ pub struct IterRef<'a, KeyType:Ord, ContentType> (
     IterRefEnum<'a, KeyType, ContentType>
 );
 
+
+
 enum IterRefEnum<'a, KeyType:Ord, ContentType> {
     NewIter(&'a Map<KeyType, ContentType>),
     Iter{
@@ -34,9 +38,13 @@ enum IterRefEnum<'a, KeyType:Ord, ContentType> {
     }
 }
 
+
+
 pub struct IterRefMut<'a, KeyType:Ord, ContentType> (
     IterRefMutEnum<'a, KeyType, ContentType>
 );
+
+
 
 enum IterRefMutEnum<'a, KeyType:Ord, ContentType> {
     NewIter(&'a mut Map<KeyType, ContentType>),
@@ -47,15 +55,21 @@ enum IterRefMutEnum<'a, KeyType:Ord, ContentType> {
     }
 }
 
+
+
 pub struct IntoIter<KeyType:Ord, ContentType> {
     map: Map<KeyType, ContentType>,
     iter_data: IntoIterEnum<KeyType, ContentType>
 }
 
+
+
 pub(crate) struct EmptyIter<'a, KeyType:Ord, ContentType> {
     map: &'a mut Map<KeyType, ContentType>,
     iter_data: IntoIterEnum<KeyType, ContentType>
 }
+
+
 
 enum IntoIterEnum<KeyType:Ord, ContentType> {
     NewIter,

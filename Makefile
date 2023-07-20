@@ -5,7 +5,7 @@ t:
 	cargo test 
 
 tf:
-	cargo test --features unchecked_mut,into_precompiled
+	cargo test --features unchecked_mut,into_precomputed
 
 a:
 	-- --show-output

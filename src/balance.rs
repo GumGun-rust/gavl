@@ -11,7 +11,7 @@ use super::{
         Side,
         BinarySon,
     },
-    into_precompiled,
+    into_precomputed,
     MapNode,
     Map,
     MapLink,
@@ -156,9 +156,9 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
     }
 
     fn rotate_right(&mut self, mut pivot:MapLink<KeyType, ContentType>) {
-        let mut pivot_mut = unsafe{ pivot.as_mut() };
+        let pivot_mut = unsafe{ pivot.as_mut() };
         let mut pivot_father = pivot_mut.father.unwrap();
-        let mut pivot_father_mut = unsafe{ pivot_father.as_mut() };
+        let pivot_father_mut = unsafe{ pivot_father.as_mut() };
         
         pivot_mut.father = pivot_father_mut.father;
         match pivot_father_mut.father {
@@ -187,9 +187,9 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
 
     
     fn rotate_left(&mut self, mut pivot:MapLink<KeyType, ContentType>) {
-        let mut pivot_mut = unsafe{ pivot.as_mut() };
+        let pivot_mut = unsafe{ pivot.as_mut() };
         let mut pivot_father = pivot_mut.father.unwrap();
-        let mut pivot_father_mut = unsafe{ pivot_father.as_mut() };
+        let pivot_father_mut = unsafe{ pivot_father.as_mut() };
         
         pivot_mut.father = pivot_father_mut.father;
         match pivot_father_mut.father {
@@ -261,7 +261,7 @@ impl<KeyType:Ord, ContentType> MapNode<KeyType, ContentType>{
             father:None,
             depth: BinarySon::default(),
             son: BinarySon::default(),
-            metadata:into_precompiled::FeatureField::default(),
+            metadata:into_precomputed::FeatureField::default(),
         }))).expect("system ran out of memory")
         
     }

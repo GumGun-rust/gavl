@@ -15,10 +15,10 @@ use super::{
     },
 };
 
-impl<KeyType:Ord, ContentType> Map<KeyType, ContentType> {
-    pub fn iter_ref_mut(&mut self) -> IterRefMut<KeyType, ContentType> {
+impl<'a, KeyType:Ord, ContentType> IterRefMut<'a, KeyType, ContentType> {
+    pub fn new(map:&'a mut Map<KeyType, ContentType>) -> Self {
         IterRefMut(
-            IterRefMutEnum::NewIter(self)
+            IterRefMutEnum::NewIter(map)
         )
     }
 }

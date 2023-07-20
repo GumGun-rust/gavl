@@ -1,27 +1,16 @@
-
-/*
-#[derive(Debug, Default)]
-pub(crate) struct PrecompiledMetadata{
-    pub index: usize,
-    pub son_index: BinarySon<Option<usize>>,
-}
-*/
-
-
-
 #[allow(unused_imports)]
-pub use precompiled_feature::*;
+pub use precomputed_feature::*;
 
-#[cfg(not(feature = "into_precompiled"))]
-pub mod precompiled_feature {
+#[cfg(all(not(feature = "into_precomputed"), not(doc)))]
+mod precomputed_feature {
     
     #[derive(Debug, Default)]
     pub(crate) struct FeatureField();
     
 }
 
-#[cfg(feature = "into_precompiled")]
-pub mod precompiled_feature {
+#[cfg(any(feature = "into_precomputed", doc))]
+mod precomputed_feature {
     use super::{
         super::{
             structs::{
@@ -36,6 +25,12 @@ pub mod precompiled_feature {
         pub son_index: BinarySon<Option<usize>>,
     }
     
+    
+    /// # Dependant on feature into_precomputed 
+    /// Maybe one day I will change it to into_precomputed
+    /// 
+    /// This is the data structure returned by the `.into_iter_precomputed()` this saved to an
+    /// array will directly give a structure ready for binary search
     #[derive(Debug)]
     pub struct PrecompiledIterNode<KeyType:Ord, ContentType>{
         pub key: KeyType,

@@ -4,7 +4,6 @@ use std::{
 
 };
 
-
 use super::{
     IntoIter,
     IntoIterEnum,
@@ -19,16 +18,8 @@ use super::{
     },
 };
 
-impl<KeyType:Ord, ContentType> Map<KeyType, ContentType> {
-    
-    pub fn into_iter(self) -> IntoIter<KeyType, ContentType> {
-        IntoIter{
-            map: self,
-            iter_data: IntoIterEnum::NewIter,
-        }
-    }
-}
-    
+
+
 impl<KeyType:Ord, ContentType> Map<KeyType, ContentType> {
     
     pub(crate) fn empty_iter(&mut self) -> EmptyIter<KeyType, ContentType> {
@@ -41,6 +32,17 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType> {
 }
 
     
+
+impl<KeyType:Ord, ContentType> IntoIter<KeyType, ContentType> {
+    pub(crate) fn new(map:Map<KeyType, ContentType>) -> Self {
+        IntoIter{
+            map: map,
+            iter_data: IntoIterEnum::NewIter,
+        }
+    }
+}
+
+
 
 impl<KeyType:Ord, ContentType> Iterator for IntoIter<KeyType, ContentType> {
     type Item = (KeyType, ContentType);
@@ -122,7 +124,7 @@ impl<KeyType:Ord, ContentType> Iterator for IntoIterEnum<KeyType, ContentType> {
             let holder_ref = unsafe{holder.as_ref()};
             *next = match holder_ref.son[Side::Right] {
                 Some(mut pivot) => {
-                    let mut pivot_mut = unsafe{pivot.as_mut()};
+                    let pivot_mut = unsafe{pivot.as_mut()};
                     if let Some(mut father) = holder_ref.father {
                         let father_mut = unsafe{father.as_mut()};
                         father_mut.son[Side::Left] = Some(pivot);

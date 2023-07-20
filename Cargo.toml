@@ -1,6 +1,6 @@
 [package]
 name = "gavl"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 authors = ["GumGun"]
 description = "A fast implementation for a map and a set using an AVL tree"
@@ -17,4 +17,6 @@ thiserror = "1.0.40"
 
 [features]
 unchecked_mut = []
-into_precompiled = []
+into_precomputed = []
+
+

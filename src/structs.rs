@@ -69,11 +69,11 @@ impl<U> IndexMut<Side> for BinarySon<U> {
     }
 }
 
-#[cfg(feature = "into_precompiled")]
-pub use into_precompiled::*;
+#[cfg(feature = "into_precomputed")]
+pub use into_precomputed::*;
 
-#[cfg(feature = "into_precompiled")]
-mod into_precompiled {
+#[cfg(feature = "into_precomputed")]
+mod into_precomputed {
     
 }
 
