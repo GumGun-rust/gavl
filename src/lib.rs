@@ -255,7 +255,7 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
     /// ## Success
     /// * `Ok(&ContentType)`:   A reference to the content associated to that key
     /// ## Errors
-    pub fn get(&mut self, key:&KeyType) -> Result<&ContentType, Error> {
+    pub fn get(&self, key:&KeyType) -> Result<&ContentType, Error> {
         let pivot = match self.head {
             None => {return Err(Error::NotFound);}
             Some(data) => data,
