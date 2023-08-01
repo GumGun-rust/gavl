@@ -15,7 +15,7 @@ use super::{
 };
 
 use crate::{
-    into_precomputed::PrecompiledIterNode,
+    into_precomputed::PrecomputedIterNode,
 };
 
 /// # Dependant on feature into_precomputed
@@ -128,7 +128,7 @@ impl<KeyType:Ord, ContentType> IntoIterPrecompEnum<KeyType, ContentType> {
 }
 
 impl<KeyType:Ord, ContentType> Iterator for IntoIterPrecomp<KeyType, ContentType> {
-    type Item = PrecompiledIterNode<KeyType, ContentType>;
+    type Item = PrecomputedIterNode<KeyType, ContentType>;
     
     fn next(&mut self) -> Option<Self::Item> {
         
@@ -175,7 +175,7 @@ impl<KeyType:Ord, ContentType> Iterator for IntoIterPrecomp<KeyType, ContentType
                 self.iter_data = IntoIterPrecompEnum::Iter{next:next, head_found:false, phantom0:PhantomData, phantom1:PhantomData};
                 
                 Some(
-                    PrecompiledIterNode{
+                    PrecomputedIterNode{
                         head:false, 
                         key:holder_box.key, 
                         content:holder_box.content, 
@@ -236,7 +236,7 @@ impl<KeyType:Ord, ContentType> Iterator for IntoIterPrecomp<KeyType, ContentType
                             },
                         };
                         Some(
-                            PrecompiledIterNode{
+                            PrecomputedIterNode{
                                 head:is_head, 
                                 key:holder_box.key, 
                                 content:holder_box.content, 

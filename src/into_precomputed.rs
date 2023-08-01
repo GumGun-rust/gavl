@@ -32,7 +32,7 @@ mod precomputed_feature {
     /// This is the data structure returned by the `.into_iter_precomputed()` this saved to an
     /// array will directly give a structure ready for binary search
     #[derive(Debug)]
-    pub struct PrecompiledIterNode<KeyType:Ord, ContentType>{
+    pub struct PrecomputedIterNode<KeyType:Ord, ContentType>{
         pub key: KeyType,
         pub content: ContentType,
         pub head: bool,
@@ -40,7 +40,7 @@ mod precomputed_feature {
         pub next_index: Option<usize>,
     }
 
-    impl<KeyType:Ord+Clone, ContentType:Clone> Clone for PrecompiledIterNode<KeyType, ContentType>{
+    impl<KeyType:Ord+Clone, ContentType:Clone> Clone for PrecomputedIterNode<KeyType, ContentType>{
         fn clone(&self) -> Self {
             Self{
                 key:self.key.clone(),
@@ -52,7 +52,7 @@ mod precomputed_feature {
         }
     }
 
-    impl<KeyType:Ord+Copy, ContentType:Copy> Copy for PrecompiledIterNode<KeyType, ContentType>{}
+    impl<KeyType:Ord+Copy, ContentType:Copy> Copy for PrecomputedIterNode<KeyType, ContentType>{}
 
     
 }

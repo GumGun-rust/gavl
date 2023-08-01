@@ -21,7 +21,7 @@ mod into_precomputed;
 
 
 #[cfg(any(feature = "into_precomputed", doc))]
-pub use into_precomputed::PrecompiledIterNode;
+pub use into_precomputed::PrecomputedIterNode;
 #[cfg(any(feature = "into_precomputed", doc))]
 pub use iters::IntoIterPrecomp;
 
