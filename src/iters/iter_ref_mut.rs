@@ -1,18 +1,16 @@
 use std::{
-    //iter::Iterator,
     marker::PhantomData,
 };
 
 use super::{
-    IterRefMut,
-    IterRefMutEnum,
-    //LevelIter,
     super::{
         structs::{
             Side,
         },
         Map,
     },
+    IterRefMut,
+    IterRefMutEnum,
 };
 
 impl<'a, KeyType:Ord, ContentType> IterRefMut<'a, KeyType, ContentType> {

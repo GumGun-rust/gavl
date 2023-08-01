@@ -1,21 +1,19 @@
 use std::{
-    iter::Iterator,
     marker::PhantomData,
-
 };
 
 use super::{
-    IntoIter,
-    IntoIterEnum,
-    EmptyIter,
     super::{
         structs::{
             Side,
         },
         Map,
-        MapNode,
         MapLink,
+        MapNode,
     },
+    IntoIter,
+    IntoIterEnum,
+    EmptyIter,
 };
 
 

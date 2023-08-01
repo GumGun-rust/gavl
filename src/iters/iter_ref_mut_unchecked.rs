@@ -7,12 +7,17 @@ use super::{
         structs::{
             Side,
         },
-        MapLink,
         Map,
+        MapLink,
     },
 };
 
-#[cfg(feature = "unchecked_mut")]
+/// # Dependant on feature unchecked_mut
+/// Returns a mutable reference to both the key and the content, it is dangerous to modify the key
+/// since the tree wont autobalance.
+/// 
+/// For this reason you should make sure that  for each `Key1 > Key0` the transformation applied to 
+/// the key `t(Key1) > t(Key0)` can be granted.
 pub struct IterRefMutUnchecked<'a, KeyType:Ord, ContentType> (
     IterRefMutUncheckedEnum<'a, KeyType, ContentType>
 );
@@ -26,17 +31,7 @@ enum IterRefMutUncheckedEnum<'a, KeyType:Ord, ContentType> {
     }
 }
 
-impl<KeyType:Ord, ContentType> Map<KeyType, ContentType> {
-    pub fn iter_ref_mut_unchecked(&mut self) -> IterRefMutUnchecked<KeyType, ContentType> {
-        IterRefMutUnchecked(
-            IterRefMutUncheckedEnum::NewIter(self)
-        )
-    }
-}
 
-impl<'a, KeyType:Ord, ContentType> IterRefMutUnchecked<'a, KeyType, ContentType> {
-    
-}
 
 impl<'a, KeyType:Ord, ContentType> Iterator for IterRefMutUnchecked<'a, KeyType, ContentType> {
     type Item = (&'a mut KeyType, &'a mut ContentType);

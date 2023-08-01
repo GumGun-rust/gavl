@@ -1,7 +1,5 @@
 use std::{
-    iter::Iterator,
     marker::PhantomData,
-
 };
 
 use super::{
@@ -31,7 +29,7 @@ pub struct IntoIterPrecomp<KeyType:Ord, ContentType> {
     iter_data: IntoIterPrecompEnum<KeyType, ContentType>
 }
 
-pub(crate) enum IntoIterPrecompEnum<KeyType:Ord, ContentType> {
+enum IntoIterPrecompEnum<KeyType:Ord, ContentType> {
     NewIter,
     Iter{
         head_found: bool,

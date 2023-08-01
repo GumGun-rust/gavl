@@ -1,10 +1,11 @@
-//pub mod level;
 pub mod iter_ref;
 pub mod iter_ref_mut;
 pub mod into_iter;
 
-#[cfg(feature = "unchecked_mut")]
+#[cfg(any(feature = "unchecked_mut", doc))]
 pub mod iter_ref_mut_unchecked;
+#[cfg(any(feature = "unchecked_mut", doc))]
+pub use iter_ref_mut_unchecked::*;
 
 #[cfg(any(feature = "into_precomputed", doc))]
 pub mod into_iter_precomputed;

@@ -1,18 +1,17 @@
 use std::{
-    //iter::Iterator,
     marker::PhantomData,
 };
 
 use super::{
-    IterRef,
-    IterRefEnum,
-    //LevelIter,
     super::{
         structs::{
             Side,
         },
         Map,
     },
+    IterRef,
+    IterRefEnum,
+    //LevelIter,
 };
 
 impl<'a, KeyType:Ord, ContentType> IterRef<'a, KeyType, ContentType> {

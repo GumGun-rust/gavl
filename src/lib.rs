@@ -1,10 +1,10 @@
 //! # AVL data structures
 //! This crate implements a `Map` based on an AVL in the near future it may include a `Set` as well 
 //! # Panics
-//! the only thing that makes this crate panics is Box panic
+//! The only panic that can be raised by this crate arrises from Box panic
 //! # Safety
 //! As of now I haven run the analisis or test to determine if it is Send and Sync in in the near
-//! future I will implement something `rwlocks` 
+//! future, maybe I will implement something `rwlocks`
 //! # Features
 //! * `into_precomputed` - Enables the into precomputed iterator
 //! * `unchecked_mut` - Enables a iterator that yields a mutable reference to the key (Not yet in
@@ -18,6 +18,9 @@ mod iters;
 mod errors;
 mod into_precomputed;
 
+
+#[cfg(any(feature = "unchecked_mut", doc))]
+pub use iters::IterRefMutUnchecked;
 
 
 #[cfg(any(feature = "into_precomputed", doc))]
@@ -35,7 +38,9 @@ use std::{
     ptr::NonNull,
 };
 
-/// # Map of test type
+/// # Map optimized for search
+/// Map of `<KeyType>` to `<ContentType>` optimized for search
+/// worst case log(n)
 /// the implementation of a AVl self balancing tree 
 /// 
 /// should add a little bit more info on the implementation
@@ -166,7 +171,7 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
     /// # Returns
     /// ## Success
     /// * `None`:   key didn't existed in `Map`
-    /// * `Some(oldContent)`:   key's content was replaced
+    /// * `Some(oldContent)`:  old key's content
     pub fn insert(&mut self, key:KeyType, content:ContentType) -> Option<ContentType> {
         let new_node = MapNode::new_map_link(key, content);
         
@@ -220,7 +225,7 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
     
     
 
-    /// Deletes all the nodes in the `Map`
+    /// Deletes all the nodes in the `Map` and sets the len to 0
     ///
     /// # Examples
     /// ```
@@ -255,6 +260,7 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
     /// ## Success
     /// * `Ok(&ContentType)`:   A reference to the content associated to that key
     /// ## Errors
+    /// * `Err(Error::NotFound)`:   Is returned if the key is not present
     pub fn get(&self, key:&KeyType) -> Result<&ContentType, Error> {
         let pivot = match self.head {
             None => {return Err(Error::NotFound);}
@@ -283,7 +289,7 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
     /// ## Success
     /// * `Ok(&mut ContentType)`:   A mutable reference to the content associated to that key
     /// ## Errors
-    /// * `Err(Error::NotFound)`:   Is returned if the key not present
+    /// * `Err(Error::NotFound)`:   Is returned if the key is not present
     pub fn get_mut(&mut self, key:&KeyType) -> Result<&mut ContentType, Error> {
         let pivot = match self.head {
             None => {return Err(Error::NotFound);}
@@ -311,7 +317,7 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
     /// ## Success
     /// * `Ok(())`
     /// ## Errors
-    /// * `Err(Error::NotFound)`:   Is returned if the key not present
+    /// * `Err(Error::NotFound)`:   Is returned if the key is not present
     pub fn remove(&mut self, key:&KeyType) -> Result<ContentType, Error> {
         match self.size {
             0 => {
@@ -356,7 +362,7 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
     /// ## Success
     /// * `Ok(())`
     /// ## Errors
-    /// * `Err(Error::NotFound)`:   Is returned if the key not present
+    /// * `Err(Error::NotFound)`:   Is returned if the key is not present
     pub fn delete(&mut self, key:&KeyType) -> Result<(), Error> {
         match self.size {
             0 => {
@@ -418,7 +424,16 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
         iters::IterRefMut::new(self)
     }
     
+    
+    
+    #[cfg(any(feature = "unchecked_mut", doc))]
+    pub fn iter_ref_mut_unchecked(&mut self) -> IterRefMutUnchecked<KeyType, ContentType> {
+        IterRefMutUnchecked(
+            IterRefMutUncheckedEnum::NewIter(self)
+        )
+    }
 
+    
 
     /// # Dependant on feature into_precomputed
     /// Return an iterator check [`IntoIterPrecomp`][`IntoIterPrecomp`] for extra info
