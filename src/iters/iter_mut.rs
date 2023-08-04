@@ -9,28 +9,28 @@ use super::{
         },
         Map,
     },
-    IterRefMut,
-    IterRefMutEnum,
+    IterMut,
+    IterMutEnum,
 };
 
-impl<'a, KeyType:Ord, ContentType> IterRefMut<'a, KeyType, ContentType> {
+impl<'a, KeyType:Ord, ContentType> IterMut<'a, KeyType, ContentType> {
     pub fn new(map:&'a mut Map<KeyType, ContentType>) -> Self {
-        IterRefMut(
-            IterRefMutEnum::NewIter(map)
+        IterMut(
+            IterMutEnum::NewIter(map)
         )
     }
 }
 
-impl<'a, KeyType:Ord, ContentType> IterRefMut<'a, KeyType, ContentType> {
+impl<'a, KeyType:Ord, ContentType> IterMut<'a, KeyType, ContentType> {
     
 }
 
-impl<'a, KeyType:Ord, ContentType> Iterator for IterRefMut<'a, KeyType, ContentType> {
+impl<'a, KeyType:Ord, ContentType> Iterator for IterMut<'a, KeyType, ContentType> {
     type Item = (&'a KeyType, &'a mut ContentType);
     
     fn next(&mut self) -> Option<Self::Item> {
         match &mut self.0 {
-            IterRefMutEnum::NewIter(map) => {
+            IterMutEnum::NewIter(map) => {
                 let mut pivot = match map.head {
                     Some(head) => head,
                     None => {return None;}
@@ -39,7 +39,7 @@ impl<'a, KeyType:Ord, ContentType> Iterator for IterRefMut<'a, KeyType, ContentT
                     let pivot_mut = unsafe{pivot.as_mut()};
                     match pivot_mut.son[Side::Left] {
                         None => {
-                            *self = IterRefMut(IterRefMutEnum::Iter{current:pivot, phantom0:PhantomData, phantom1:PhantomData});
+                            *self = IterMut(IterMutEnum::Iter{current:pivot, phantom0:PhantomData, phantom1:PhantomData});
                             
                             return Some((&pivot_mut.key, &mut pivot_mut.content));
                         },
@@ -49,7 +49,7 @@ impl<'a, KeyType:Ord, ContentType> Iterator for IterRefMut<'a, KeyType, ContentT
                     }
                 }
             },
-            IterRefMutEnum::Iter{
+            IterMutEnum::Iter{
                 ref mut current,
                 ..
             } => {
@@ -79,7 +79,7 @@ mod test {
             avl.add(number, 0).unwrap();
         }
         println!("{:#?}", &avl);
-        let iter_level = avl.iter_ref_mut();//.enumerate();
+        let iter_level = avl.iter_mut();//.enumerate();
         for elem in iter_level {
             print_type_of(&elem);
             println!("{:?}", &elem);

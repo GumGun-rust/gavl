@@ -2,3 +2,9 @@
 * Added default method to Map
 * Changed PrecompiledIterNode to PrecomputedIterNode
 * Added documentation for `unchecked_mut` and small whitespace changed on iters
+
+# 0.1.5
+* Changed `iter_ref()` to `iter()` 
+* Changed `iter_ref_mut()` to `iter_mut()`
+* Changed `IterRef` to `Iter` 
+* Changed `IterRefMut` to `IterMut` 

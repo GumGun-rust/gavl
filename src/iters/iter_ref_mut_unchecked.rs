@@ -18,11 +18,11 @@ use super::{
 /// 
 /// For this reason you should make sure that  for each `Key1 > Key0` the transformation applied to 
 /// the key `t(Key1) > t(Key0)` can be granted.
-pub struct IterRefMutUnchecked<'a, KeyType:Ord, ContentType> (
-    IterRefMutUncheckedEnum<'a, KeyType, ContentType>
+pub struct IterMutUnchecked<'a, KeyType:Ord, ContentType> (
+    IterMutUncheckedEnum<'a, KeyType, ContentType>
 );
 
-enum IterRefMutUncheckedEnum<'a, KeyType:Ord, ContentType> {
+enum IterMutUncheckedEnum<'a, KeyType:Ord, ContentType> {
     NewIter(&'a mut Map<KeyType, ContentType>),
     Iter{
         current: MapLink<KeyType, ContentType>,
@@ -33,12 +33,12 @@ enum IterRefMutUncheckedEnum<'a, KeyType:Ord, ContentType> {
 
 
 
-impl<'a, KeyType:Ord, ContentType> Iterator for IterRefMutUnchecked<'a, KeyType, ContentType> {
+impl<'a, KeyType:Ord, ContentType> Iterator for IterMutUnchecked<'a, KeyType, ContentType> {
     type Item = (&'a mut KeyType, &'a mut ContentType);
     
     fn next(&mut self) -> Option<Self::Item> {
         match &mut self.0 {
-            IterRefMutUncheckedEnum::NewIter(map) => {
+            IterMutUncheckedEnum::NewIter(map) => {
                 let mut pivot = match map.head {
                     Some(head) => head,
                     None => {return None;}
@@ -47,7 +47,7 @@ impl<'a, KeyType:Ord, ContentType> Iterator for IterRefMutUnchecked<'a, KeyType,
                     let pivot_mut = unsafe{pivot.as_mut()};
                     match pivot_mut.son[Side::Left] {
                         None => {
-                            *self = IterRefMutUnchecked(IterRefMutUncheckedEnum::Iter{current:pivot, phantom0:PhantomData, phantom1:PhantomData});
+                            *self = IterMutUnchecked(IterMutUncheckedEnum::Iter{current:pivot, phantom0:PhantomData, phantom1:PhantomData});
                             
                             return Some((&mut pivot_mut.key, &mut pivot_mut.content));
                         },
@@ -57,7 +57,7 @@ impl<'a, KeyType:Ord, ContentType> Iterator for IterRefMutUnchecked<'a, KeyType,
                     }
                 }
             },
-            IterRefMutUncheckedEnum::Iter{
+            IterMutUncheckedEnum::Iter{
                 ref mut current,
                 ..
             } => {

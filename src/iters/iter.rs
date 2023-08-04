@@ -1,6 +1,5 @@
 use std::{
-    marker::PhantomData,
-};
+    marker::PhantomData, };
 
 use super::{
     super::{
@@ -9,29 +8,29 @@ use super::{
         },
         Map,
     },
-    IterRef,
-    IterRefEnum,
+    Iter,
+    IterEnum,
     //LevelIter,
 };
 
-impl<'a, KeyType:Ord, ContentType> IterRef<'a, KeyType, ContentType> {
-    pub(crate) fn new(map:&'a Map<KeyType, ContentType>) -> IterRef<'a, KeyType, ContentType> {
-        IterRef(
-            IterRefEnum::NewIter(map)
+impl<'a, KeyType:Ord, ContentType> Iter<'a, KeyType, ContentType> {
+    pub(crate) fn new(map:&'a Map<KeyType, ContentType>) -> Iter<'a, KeyType, ContentType> {
+        Iter(
+            IterEnum::NewIter(map)
         )
     }
 }
 
-impl<'a, KeyType:Ord, ContentType> IterRef<'a, KeyType, ContentType> {
+impl<'a, KeyType:Ord, ContentType> Iter<'a, KeyType, ContentType> {
     
 }
 
-impl<'a, KeyType:Ord, ContentType> Iterator for IterRef<'a, KeyType, ContentType> {
+impl<'a, KeyType:Ord, ContentType> Iterator for Iter<'a, KeyType, ContentType> {
     type Item = (&'a KeyType, &'a ContentType);
     
     fn next(&mut self) -> Option<Self::Item> {
         match &mut self.0 {
-            IterRefEnum::NewIter(map) => {
+            IterEnum::NewIter(map) => {
                 let mut pivot = match map.head {
                     Some(head) => head,
                     None => {return None;}
@@ -40,7 +39,7 @@ impl<'a, KeyType:Ord, ContentType> Iterator for IterRef<'a, KeyType, ContentType
                     let pivot_ref = unsafe{pivot.as_ref()};
                     match pivot_ref.son[Side::Left] {
                         None => {
-                            *self = IterRef(IterRefEnum::Iter{current:pivot, phantom0:PhantomData, phantom1:PhantomData});
+                            *self = Iter(IterEnum::Iter{current:pivot, phantom0:PhantomData, phantom1:PhantomData});
                             
                             return Some((&pivot_ref.key, &pivot_ref.content));
                         },
@@ -50,7 +49,7 @@ impl<'a, KeyType:Ord, ContentType> Iterator for IterRef<'a, KeyType, ContentType
                     }
                 }
             },
-            IterRefEnum::Iter{
+            IterEnum::Iter{
                 ref mut current,
                 ..
             } => {
@@ -80,11 +79,10 @@ mod test {
             avl.add(number, 0).unwrap();
         }
         println!("{:#?}", &avl);
-        let iter_level = avl.iter_ref_mut();//.enumerate();
+        let iter_level = avl.iter();//.enumerate();
         for elem in iter_level {
             print_type_of(&elem);
             println!("{:?}", &elem);
-            *elem.1 += 1;
             println!("{:?}", &elem);
         }
         println!("{:#?}", &avl);

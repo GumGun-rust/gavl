@@ -1,5 +1,5 @@
-pub mod iter_ref;
-pub mod iter_ref_mut;
+pub mod iter;
+pub mod iter_mut;
 pub mod into_iter;
 
 #[cfg(any(feature = "unchecked_mut", doc))]
@@ -24,13 +24,13 @@ use super::{
 use std::marker::PhantomData;
 
 
-pub struct IterRef<'a, KeyType:Ord, ContentType> (
-    IterRefEnum<'a, KeyType, ContentType>
+pub struct Iter<'a, KeyType:Ord, ContentType> (
+    IterEnum<'a, KeyType, ContentType>
 );
 
 
 
-enum IterRefEnum<'a, KeyType:Ord, ContentType> {
+enum IterEnum<'a, KeyType:Ord, ContentType> {
     NewIter(&'a Map<KeyType, ContentType>),
     Iter{
         current: MapLink<KeyType, ContentType>,
@@ -41,13 +41,13 @@ enum IterRefEnum<'a, KeyType:Ord, ContentType> {
 
 
 
-pub struct IterRefMut<'a, KeyType:Ord, ContentType> (
-    IterRefMutEnum<'a, KeyType, ContentType>
+pub struct IterMut<'a, KeyType:Ord, ContentType> (
+    IterMutEnum<'a, KeyType, ContentType>
 );
 
 
 
-enum IterRefMutEnum<'a, KeyType:Ord, ContentType> {
+enum IterMutEnum<'a, KeyType:Ord, ContentType> {
     NewIter(&'a mut Map<KeyType, ContentType>),
     Iter{
         current: MapLink<KeyType, ContentType>,

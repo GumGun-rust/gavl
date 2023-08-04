@@ -14,13 +14,11 @@ mod structs;
 mod balance;
 mod traits;
 mod iters;
-
-mod errors;
-mod into_precomputed;
+mod errors; mod into_precomputed;
 
 
 #[cfg(any(feature = "unchecked_mut", doc))]
-pub use iters::IterRefMutUnchecked;
+pub use iters::IterMutUnchecked;
 
 
 #[cfg(any(feature = "into_precomputed", doc))]
@@ -52,8 +50,8 @@ pub struct Map<KeyType:Ord, ContentType>{
 
 pub use errors::Error;
 pub use iters::IntoIter;
-pub use iters::IterRef;
-pub use iters::IterRefMut;
+pub use iters::Iter;
+pub use iters::IterMut;
 
 
 
@@ -414,22 +412,22 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
     
     
 
-    pub fn iter_ref(&self) -> iters::IterRef<KeyType, ContentType> {
-        iters::IterRef::new(self)
+    pub fn iter(&self) -> iters::Iter<KeyType, ContentType> {
+        iters::Iter::new(self)
     }
     
 
     
-    pub fn iter_ref_mut(&mut self) -> iters::IterRefMut<KeyType, ContentType> {
-        iters::IterRefMut::new(self)
+    pub fn iter_mut(&mut self) -> iters::IterMut<KeyType, ContentType> {
+        iters::IterMut::new(self)
     }
     
     
     
     #[cfg(any(feature = "unchecked_mut", doc))]
-    pub fn iter_ref_mut_unchecked(&mut self) -> IterRefMutUnchecked<KeyType, ContentType> {
-        IterRefMutUnchecked(
-            IterRefMutUncheckedEnum::NewIter(self)
+    pub fn iter_ref_mut_unchecked(&mut self) -> IterMutUnchecked<KeyType, ContentType> {
+        IterMutUnchecked(
+            IterMutUncheckedEnum::NewIter(self)
         )
     }
 
