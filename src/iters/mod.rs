@@ -115,6 +115,75 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType> {
             }
         }
     }
-    
 }
+
+
+
+impl<KeyType:Ord, ContentType> IntoIterEnum<KeyType, ContentType> {
+    fn get_first(map: &mut Map<KeyType, ContentType>) -> Option<MapLink<KeyType, ContentType>> {
+        let mut pivot = map.head?; 
+        loop{
+            let pivot_ref = unsafe{pivot.as_ref()};
+            match pivot_ref.son[Side::Left] {
+                Some(new_pivot) => {
+                    pivot = new_pivot;
+                },
+                None => {
+                    break;
+                }
+            }
+        }
+        Some(pivot)
+    }
+}
+
+
+
+impl<KeyType:Ord, ContentType> Iterator for IntoIterEnum<KeyType, ContentType> {
+    type Item = MapLink<KeyType, ContentType>;
+    
+    fn next(&mut self) -> Option<Self::Item> {
+        if let IntoIterEnum::Iter{ ref mut next, .. } = self {
+            let holder = next.clone()?;
+            
+            let holder_ref = unsafe{holder.as_ref()};
+            *next = match holder_ref.son[Side::Right] {
+                Some(mut pivot) => {
+                    let pivot_mut = unsafe{pivot.as_mut()};
+                    if let Some(mut father) = holder_ref.father {
+                        let father_mut = unsafe{father.as_mut()};
+                        father_mut.son[Side::Left] = Some(pivot);
+                        pivot_mut.father = Some(father);
+                    } else {
+                        pivot_mut.father = None;
+                    }
+                    
+                    loop {
+                        let pivot_mut = unsafe{pivot.as_mut()};
+                        match pivot_mut.son[Side::Left] {
+                            Some(next_pivot) => {
+                                pivot = next_pivot;
+                            },
+                            None => {
+                                break;
+                            }
+                        }
+                    }
+                    Some(pivot)
+                },
+                None => {
+                    if let Some(mut father) = holder_ref.father {
+                        let father_mut = unsafe{father.as_mut()};
+                        father_mut.son[Side::Left] = None;
+                    }
+                    holder_ref.father
+                },
+            };
+            return Some(holder)
+        }
+        None
+    }
+}
+
+
 

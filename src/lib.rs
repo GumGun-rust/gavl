@@ -426,9 +426,7 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
     
     #[cfg(any(feature = "unchecked_mut", doc))]
     pub fn iter_ref_mut_unchecked(&mut self) -> IterMutUnchecked<KeyType, ContentType> {
-        IterMutUnchecked(
-            IterMutUncheckedEnum::NewIter(self)
-        )
+        iters::IterMutUnchecked::new(self)
     }
 
     

@@ -31,6 +31,13 @@ enum IterMutUncheckedEnum<'a, KeyType:Ord, ContentType> {
     }
 }
 
+impl<'a, KeyType:Ord, ContentType> IterMutUnchecked<'a, KeyType, ContentType> {
+    pub(crate) fn new(map:&'a mut Map<KeyType, ContentType>) -> Self {
+        IterMutUnchecked(
+            IterMutUncheckedEnum::NewIter(map)
+        )
+    }
+}
 
 
 impl<'a, KeyType:Ord, ContentType> Iterator for IterMutUnchecked<'a, KeyType, ContentType> {

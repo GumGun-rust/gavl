@@ -27,7 +27,6 @@ mod precomputed_feature {
     
     
     /// # Dependant on feature into_precomputed 
-    /// Maybe one day I will change it to into_precomputed
     /// 
     /// This is the data structure returned by the `.into_iter_precomputed()` this saved to an
     /// array will directly give a structure ready for binary search
