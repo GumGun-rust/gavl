@@ -8,3 +8,5 @@
 * Changed `iter_ref_mut()` to `iter_mut()`
 * Changed `IterRef` to `Iter` 
 * Changed `IterRefMut` to `IterMut` 
+* Full rewrite of `into_iter_precomputed()` to reuse code of `into_iter()` 
+* Added documentation on `iter` and `iter_mut` 

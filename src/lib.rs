@@ -99,7 +99,7 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
     /// # Example
     /// 
     /// ```
-    /// let avl:gavl::Map<String, i32> = gavl::Map::new();
+    /// let map:gavl::Map<String, i32> = gavl::Map::new();
     /// ```
     pub fn new() -> Self {
         Self{head:None ,size:0}
@@ -412,12 +412,65 @@ impl<KeyType:Ord, ContentType> Map<KeyType, ContentType>{
     
     
 
+    /// Returns a iterator for Map
+    /// 
+    /// The iterator yields a pair of inmutable references to key and content for each element
+    /// 
+    /// Returned values are In-Order
+    /// 
+    /// `item = (&KeyType, &ContentType)`
+    /// 
+    /// # Examples
+    /// ``` 
+    /// let mut map:gavl::Map<usize, usize> = gavl::Map::new();
+    /// 
+    /// for elem in (0..4).rev() {
+    ///     map.add(elem, 0).unwrap();
+    /// }
+    /// 
+    /// let mut iterator = map.iter();
+    /// 
+    /// assert_eq!(Some((&0, &0)), iterator.next());
+    /// assert_eq!(Some((&1, &0)), iterator.next());
+    /// assert_eq!(Some((&2, &0)), iterator.next());
+    /// assert_eq!(Some((&3, &0)), iterator.next());
+    /// assert_eq!(None, iterator.next());
+    /// 
+    /// ```
     pub fn iter(&self) -> iters::Iter<KeyType, ContentType> {
         iters::Iter::new(self)
     }
     
 
     
+    /// Returns a iterator for Map with mutable content
+    /// 
+    /// The iterator yields a pair of references for each elemnt inmutable for key and mutable for content
+    /// 
+    /// Returned values are In-Order
+    /// 
+    /// `item = (&KeyType, &mut ContentType)`
+    /// 
+    /// # Examples
+    /// ``` 
+    /// let mut map:gavl::Map<usize, usize> = gavl::Map::new();
+    /// 
+    /// for elem in (0..4).rev() {
+    ///     map.add(elem, 0).unwrap();
+    /// }
+    /// 
+    /// for (key, content) in map.iter_mut() {
+    ///     *content = 1;
+    /// }
+    /// 
+    /// let mut iterator = map.iter_mut();
+    /// assert_eq!(Some((&0, &mut 1)), iterator.next());
+    /// assert_eq!(Some((&1, &mut 1)), iterator.next());
+    /// assert_eq!(Some((&2, &mut 1)), iterator.next());
+    /// assert_eq!(Some((&3, &mut 1)), iterator.next());
+    /// assert_eq!(None, iterator.next());
+    /// 
+    /// ```
     pub fn iter_mut(&mut self) -> iters::IterMut<KeyType, ContentType> {
         iters::IterMut::new(self)
     }

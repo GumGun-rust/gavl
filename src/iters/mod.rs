@@ -24,6 +24,34 @@ use super::{
 use std::marker::PhantomData;
 
 
+/// # In-order iterator of Map 
+/// This struct is created by the [`.iter()`][iter] method on [`Map`][Map].
+/// 
+/// The iterator yields a pair of inmutable references to key and content for each element
+/// 
+/// Returned values are In-Order
+/// 
+/// `item = (&KeyType, &ContentType)`
+/// 
+/// # Examples
+/// ``` 
+/// let mut map:gavl::Map<usize, usize> = gavl::Map::new();
+/// 
+/// for elem in (0..4).rev() {
+///     map.add(elem, 0).unwrap();
+/// }
+/// 
+/// let mut iterator = map.iter();
+/// 
+/// assert_eq!(Some((&0, &0)), iterator.next());
+/// assert_eq!(Some((&1, &0)), iterator.next());
+/// assert_eq!(Some((&2, &0)), iterator.next());
+/// assert_eq!(Some((&3, &0)), iterator.next());
+/// assert_eq!(None, iterator.next());
+/// 
+/// ```
+/// [iter]: Map::iter
+/// [Map]: Map
 pub struct Iter<'a, KeyType:Ord, ContentType> (
     IterEnum<'a, KeyType, ContentType>
 );
@@ -41,6 +69,38 @@ enum IterEnum<'a, KeyType:Ord, ContentType> {
 
 
 
+/// # Iterator for Map with mutable content
+/// This struct is created by the [`.iter_mut()`][iter_mut] method on [`Map`][Map].
+/// 
+/// The iterator yields a pair of references for each elemnt inmutable for key and mutable for content
+/// 
+/// Returned values are In-Order
+/// 
+/// `item = (&KeyType, &mut ContentType)`
+/// 
+/// # Examples
+/// ``` 
+/// let mut map:gavl::Map<usize, usize> = gavl::Map::new();
+/// 
+/// for elem in (0..4).rev() {
+///     map.add(elem, 0).unwrap();
+/// }
+/// 
+/// for (key, content) in map.iter_mut() {
+///     *content = 1;
+/// }
+/// 
+/// let mut iterator = map.iter_mut();
+/// assert_eq!(Some((&0, &mut 1)), iterator.next());
+/// assert_eq!(Some((&1, &mut 1)), iterator.next());
+/// assert_eq!(Some((&2, &mut 1)), iterator.next());
+/// assert_eq!(Some((&3, &mut 1)), iterator.next());
+/// assert_eq!(None, iterator.next());
+/// 
+/// ```
+/// 
+/// [iter_mut]: Map::iter_mut
+/// [Map]: Map
 pub struct IterMut<'a, KeyType:Ord, ContentType> (
     IterMutEnum<'a, KeyType, ContentType>
 );
