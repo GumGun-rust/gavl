@@ -10,3 +10,4 @@
 * Changed `IterRefMut` to `IterMut` 
 * Full rewrite of `into_iter_precomputed()` to reuse code of `into_iter()` 
 * Added documentation on `iter` and `iter_mut` 
+* Started the readme to further improve UX

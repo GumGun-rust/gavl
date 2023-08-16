@@ -1,6 +1,6 @@
 [package]
 name = "gavl"
-version = "0.1.3"
+version = "0.1.5"
 edition = "2021"
 authors = ["GumGun"]
 description = "A fast implementation for a map and a set using an AVL tree"
